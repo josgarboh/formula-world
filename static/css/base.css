@@ -1,0 +1,32 @@
+/* BASE */
+
+nav.navbar {
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+/* HOME */
+
+body.portada {
+    background-image: url("https://www.momentogp.com/wp-content/uploads/2018/08/859201_fernando-alonso-wallpaper.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-position-y: -12%;
+}
+
+div.presentacion {
+    padding-top: 10%;
+    align-items: center;
+    margin: auto;
+}
+
+h1.home-Title {
+    color: white;
+    text-align: center;
+}
+
+h3.home-subTitle {
+    color: white;
+}
+  
