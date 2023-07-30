@@ -23,7 +23,7 @@ def cargaWhoosh(request):
         if 'Aceptar' in request.POST:
             numCircuitos = populateDB.populateWhooshCircuitos()
 
-            mensaje="Se han almacenado: " + str(numCircuitos) +" circuitos."
+            mensaje="Se ha cargado el esquema Whoosh correctamente con " + str(numCircuitos) +" circuitos. Ahora, puedes poblar la Base de Datos."
             return render(request, 'cargaWhoosh.html', {'mensaje':mensaje})
         else:
             return redirect("/")

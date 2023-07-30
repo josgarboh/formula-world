@@ -1,8 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 from django.core.validators import URLValidator
-
-# class User(AbstractUser):
 
 class Circuito(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -15,3 +14,7 @@ class Circuito(models.Model):
     
     def __str__(self):
         return self.nombre 
+    
+
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True)
