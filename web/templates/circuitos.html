@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<style>.block {
+    text-align: center;
+    }       
+
+.b {
+    padding: 50px;
+    display: inline-block;
+    }</style>
+<br>
+<center><h1>Circuitos</h1></center>
+
+{% endblock %}
+
+{% block content %} 
+
+    <body class="body">
+        {% for c in circuitos %}
+        <div class="b">
+            <a href="/circuito/{{ c.id }}"><img class="img-thumbnail"width="500px" height="800px"src="{{ c.imagen }}"></a>
+            <h3>{{ c.nombre }}</h3>             
+            <h5>{{ c.pais }}</h5>
+        </div>
+        {% endfor %}
+    </body>    
+        
+{% endblock %}

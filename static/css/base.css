@@ -1,3 +1,18 @@
+/* TODAS LAS PÁGINAS */
+
+/* body {
+    background-color: aqua;
+} */
+
+div.row {
+    margin-top: 3%;
+    justify-content: center;
+}
+
+div.col-md-6 {
+    margin: 1%;
+}
+
 /* BASE */
 
 nav.navbar {
@@ -29,4 +44,12 @@ h1.home-Title {
 h3.home-subTitle {
     color: white;
 }
-  
+
+
+/* DETALLES CIRCUITO */
+
+.imagen-trazado {
+    width: 100%;
+    height: auto;
+}
+

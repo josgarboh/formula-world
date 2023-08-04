@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h5>Este proceso es lento, borra la base de datos actual y requiere conexion a internet</h5>
-    <form id='formulario' method='post' action=''>{% csrf_token %}
-      <button class="btn waves-effect waves-light" type="submit" name="Aceptar" value="Aceptar">Aceptar</button>
-      <button class="btn waves-effect waves-light" type="submit" name="Cancelar" value="Cancelar">Cancelar</button>
-    </form>
+    <body class="body">
+      <h5>Este proceso es lento, borra la base de datos actual y requiere conexion a internet</h5>
+      <form id='formulario' method='post' action=''>{% csrf_token %}
+        <button class="btn waves-effect waves-light" type="submit" name="Aceptar" value="Aceptar">Aceptar</button>
+        <button class="btn waves-effect waves-light" type="submit" name="Cancelar" value="Cancelar">Cancelar</button>
+      </form>
+    </body>
 {% endblock %}
