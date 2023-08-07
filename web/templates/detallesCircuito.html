@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
 
-{% block content %} 
-        <body class="body">
+{% block content %}
+<body class="body"> 
+<div class="container">
 
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="imagen-trazado">
-                        <img class="img-thumbnail" src="{{ cir.imagen }}">
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="imagen-trazado">
+                <img class="img-thumbnail" src="{{ cir.imagen }}">
+            </div>
+        </div>
 
-                <div class="col-md-5">
-                    <div class="card detalles-circuito">
-                        <h1> {{ cir.nombre }} </h1>
+        <div class="col-md-5">
+            <div class="card detalles-circuito">
+                <h1> {{ cir.nombre }} </h1>
 
-                        <div class="b" style="float:left;">
-                            <h4>Información:</h4>
-                            <p>{{ cir.tipo }}</p>
-                            <p>{{ cir.pais }}</p>
-                            <p>{{ cir.edicionesDisputadas }}</p>
-                            <p>{{ cir.longitud }}</p>
-                        </div>
-                    </div>
+                <div class="b" style="float:left;">
+                    <h4>Información:</h4>
+                    <p>{{ cir.tipo }}</p>
+                    <p>{{ cir.pais }}</p>
+                    <p>{{ cir.edicionesDisputadas }}</p>
+                    <p>{{ cir.longitud }}</p>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="b" style="float: right;"></div>
-        </body>
+    <div class="b" style="float: right;"></div>
 
+</div>
+</body>    
 {% endblock %}

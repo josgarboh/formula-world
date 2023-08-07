@@ -8,7 +8,7 @@ def index(request):
     return render(request, 'home.html')
 
 def list_circuitos(request):
-    circuitos = Circuito.objects.all().order_by('nombre')
+    circuitos = Circuito.objects.all().order_by('id')
     return render(request, 'circuitos.html', {'circuitos':circuitos})
 
 def detallesCircuito(request, idEntrada):
