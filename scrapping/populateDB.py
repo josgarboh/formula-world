@@ -1,3 +1,4 @@
+import json
 from bs4 import BeautifulSoup
 import urllib.request
 from tkinter import *
@@ -5,7 +6,7 @@ from tkinter import messagebox
 import re, os, shutil
 
 from django.shortcuts import redirect, render
-from web.models import Circuito
+from web.models import Circuito, Temporada
 from whoosh.index import create_in,open_dir
 from whoosh.fields import Schema, TEXT, NUMERIC, KEYWORD, ID
 from whoosh.qparser import QueryParser
@@ -83,14 +84,46 @@ def extraer_circuitos():
     print("Extracción de circuitos completada")
     return lista
 
+#Extracción del mundial de pilotos de todas las temporadas de F1 desde 1950 hasta 2022
+def extraer_temporadas():
+    anyoComienzo = 1950
+    anyoFinal = 2022
+    ls = []
+    
+    for anyo in range(anyoComienzo, anyoFinal+1): #[)
+        url="https://pitwall.app/seasons/"+ str(anyo) + "-formula-1-world-championship"
+        f = urllib.request.urlopen(url)
+        s = BeautifulSoup(f,"lxml")      
+        
+        listaAnyo = []      
+        tablaPilotos = s.find("div",id="driver-standings").table.tbody.find_all("tr")
+        for fila in tablaPilotos:
+            columnas = fila.find_all("td")
+
+            nombrePiloto = columnas[1].a.text.strip().lower()
+            nombreEquipo = columnas[2].text.strip().lower()
+            puntos = (columnas[5].text.strip())
+            
+            enCadena = nombrePiloto + "|" + nombreEquipo + "|" + puntos #se hace así para el esquema Whoosh
+            listaAnyo.append(enCadena)
+            
+        parseoLista = ",".join(listaAnyo)        
+        ls.append((anyo, parseoLista))
+    
+    print("Extracción de temporadas completada")   
+    return ls
+
+
 
 #función auxiliar que hace scraping en la web y carga los datos en la base datos
 def populateDB():
     #variables para contar el número de registros que vamos a almacenar
     num_circuitos = 0
+    num_temporadas = 0
     
     #borramos todas las tablas de la BD
     Circuito.objects.all().delete()
+    Temporada.objects.all().delete()
 
     listaCircuitos= extraer_circuitos()
     num_circuitos = 1
@@ -100,10 +133,32 @@ def populateDB():
             c = Circuito.objects.create(id=num_circuitos, nombre= circuito[0], tipo = circuito[1], pais = circuito[2],
                                      edicionesDisputadas = circuito[3], longitud = circuito[4],
                                        imagen=circuito[5])
+            
             c.save()
             num_circuitos = num_circuitos + 1
+    
+    print("Se ha completado el poblado de Circuitos")
+
+    listaTemporadas=extraer_temporadas()
+    num_temporadas=1 #para las ID
+    for temporada in listaTemporadas:
+        if not Temporada.objects.filter(anyo=temporada[0]).exists():
+
+            dicccionarioTemporada = dict()            
+            for infoPiloto in temporada[1].split(","): #Cadena del tipo: Piloto|Equipo|puntosPiloto,Piloto|...
+                nombre, equipo, puntosPiloto = infoPiloto.split("|")
+                dicccionarioTemporada[nombre]= {"equipo": equipo, "puntosPiloto": float(puntosPiloto)}
+
+            datos_json = json.dumps(dicccionarioTemporada)#, indent=4)
+
+            t = Temporada.objects.create(id=num_temporadas, anyo=temporada[0], tablaPilotos=datos_json)
+            t.save()
+            num_temporadas = num_temporadas + 1
+
+    print("Se ha completado el poblado de Temporadas")
+
     print("Poblado de la base de datos completado")
-    return (num_circuitos-1)
+    return (num_circuitos-1, num_temporadas-1)
 
 
 def populateWhooshCircuitos():
@@ -112,12 +167,12 @@ def populateWhooshCircuitos():
     schem = Schema(idCircuito=NUMERIC(stored=True), nombre=TEXT(stored=True,phrase=False), tipo=KEYWORD(stored=True,lowercase=True), pais=KEYWORD(stored=True), edicionesDisputadas=NUMERIC(stored=True,numtype=int), longitud=NUMERIC(stored=True,numtype=float), imagen=TEXT(stored=True,phrase=True))
 
     #eliminamos el directorio del índice, si existe
-    if os.path.exists("Index"):
-        shutil.rmtree("Index")
-    os.mkdir("Index")
+    if os.path.exists("IndexCircuitos"):
+        shutil.rmtree("IndexCircuitos")
+    os.mkdir("IndexCircuitos")
 
     #creamos el índice
-    ix = create_in("Index", schema=schem)
+    ix = create_in("IndexCircuitos", schema=schem)
     #creamos un writer para poder añadir documentos al indice
     writer = ix.writer()
     numCircuitos=1
@@ -127,6 +182,30 @@ def populateWhooshCircuitos():
         writer.update_document(idCircuito = numCircuitos, nombre=str(circuito[0]), tipo=str(circuito[1]), pais=str(circuito[2]), edicionesDisputadas=int(str(circuito[3])), longitud=float(str(circuito[4])), imagen=str(circuito[5]))    
         numCircuitos +=1
     writer.commit()
-    print("Carga de Whoosh completada con éxito")
+    print("Carga de Whoosh de circuitos completada con éxito")
 
     return numCircuitos-1
+
+def populateWhooshTemporadas():
+    #define el esquema de la información
+    schem = Schema(idTemporada=NUMERIC(stored=True), anyo=NUMERIC(stored=True,numtype=int), datos=KEYWORD(stored=True,commas=True,lowercase=True))
+
+    #eliminamos el directorio del índice, si existe
+    if os.path.exists("IndexTemporadas"):
+        shutil.rmtree("IndexTemporadas")
+    os.mkdir("IndexTemporadas")
+
+    #creamos el índice
+    ix = create_in("IndexTemporadas", schema=schem)
+    #creamos un writer para poder añadir documentos al indice
+    writer = ix.writer()
+    numTemporadas=1
+    lista=extraer_temporadas()
+    for t in lista:
+        #añade cada temporada de la lista al índice
+        writer.update_document(idTemporada=numTemporadas, anyo=int(str(t[0])), datos=str(t[1]))    
+        numTemporadas+=1
+    writer.commit()
+    print("Carga de Whoosh de temporadas completada con éxito")
+
+    return numTemporadas-1
