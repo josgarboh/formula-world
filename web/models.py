@@ -8,6 +8,7 @@ class Temporada(models.Model):
     id = models.IntegerField(primary_key=True)
     anyo = models.IntegerField(blank=False, null=False, validators=[MinValueValidator(1950), MaxValueValidator(2023)])
     tablaPilotos = models.JSONField(blank=False, null=False)
+    imagenHistorica = models.URLField(validators=[URLValidator()])
 
     def __str__(self):
         return self.anyo
@@ -34,7 +35,7 @@ class Equipo(models.Model):
     puntosHistorico = models.FloatField(blank=False, null=False)
     campeonatosMundiales = models.CharField(max_length=200, blank=True, null=True)
     temporadas = models.CharField(max_length=200, blank=False, null=False)
-    imagen = models.URLField(null=True, validators=[URLValidator()])
+    imagen = models.URLField(validators=[URLValidator()])
     
     #pilotos = models.ManyToManyField(Piloto, blank=False)
 
@@ -58,7 +59,7 @@ class Piloto(models.Model):
     podiosHistorico = models.IntegerField(blank=False, null=False)
     puntosHistorico = models.FloatField(blank=False, null=False)
     campeonatosMundiales = models.CharField(max_length=200, blank=True, null=True)
-    imagen = models.URLField(null=True, validators=[URLValidator()])
+    imagen = models.URLField(validators=[URLValidator()])
     temporadas = models.CharField(max_length=200, blank=True, null=True)
 
     #equipos = models.ManyToManyField(Equipo, blank=False, through='EquiposYPilotos')

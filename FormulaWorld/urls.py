@@ -23,12 +23,14 @@ from scrapping import views as scrappingviews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('landing/', views.landing, name="landing"),
-    path('', views.index, name="home"),
+    path('', views.landing, name="landing"),
     path('cargaBD/', scrappingviews.carga, name="cargaBD"),
    #path('cargaWhoosh/', scrappingviews.cargaWhoosh, name="cargaWhoosh"),
 
     path('circuitos/', views.list_circuitos, name = "listaCircuitos"),
     path('circuito/<int:idEntrada>', views.detallesCircuito),
+
+    path('temporadas/', views.list_temporadas, name= "listaTemporadas"),
 
     path('', include("authentication.urls")),
 ]

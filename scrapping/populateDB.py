@@ -5,7 +5,7 @@ from tkinter import *
 from tkinter import messagebox
 import re, os, shutil
 
-from django.shortcuts import redirect, render
+
 from web.models import Circuito, Equipo, EquiposYPilotos, Piloto, Temporada
 from whoosh.index import create_in,open_dir
 from whoosh.fields import Schema, TEXT, NUMERIC, KEYWORD, ID
@@ -89,8 +89,17 @@ def extraer_temporadas():
     anyoComienzo = 1950
     anyoFinal = 2022
     ls = []
-    
+
+
     for anyo in range(anyoComienzo, anyoFinal+1): #[)
+
+        #Extra: Imagen histórica de cada temporada (campeón, coche dominante, etcétera)
+        urlParaImagen="https://es.wikipedia.org/wiki/Temporada_" + str(anyo) + "_de_F%C3%B3rmula_1"
+        f0 = urllib.request.urlopen(urlParaImagen)
+        s0 = BeautifulSoup(f0,"lxml")
+        imagen = s0.find("a", class_="mw-file-description").img['src']
+
+        
         url="https://pitwall.app/seasons/"+ str(anyo) + "-formula-1-world-championship"
         f = urllib.request.urlopen(url)
         s = BeautifulSoup(f,"lxml")      
@@ -100,15 +109,16 @@ def extraer_temporadas():
         for fila in tablaPilotos:
             columnas = fila.find_all("td")
 
+            posicion = columnas[0].text.strip()
             nombrePiloto = columnas[1].a.text.strip().lower()
             nombreEquipo = columnas[2].text.strip().lower()
             puntos = (columnas[5].text.strip())
             
-            enCadena = nombrePiloto + "|" + nombreEquipo + "|" + puntos #se hace así para el esquema Whoosh
+            enCadena = posicion + "|" + nombrePiloto + "|" + nombreEquipo + "|" + puntos #se hace así para el esquema Whoosh
             listaAnyo.append(enCadena)
             
         parseoLista = ",".join(listaAnyo)        
-        ls.append((anyo, parseoLista))
+        ls.append((anyo, parseoLista, imagen))
     
     print("Extracción de temporadas completada")   
     return ls
@@ -140,7 +150,7 @@ def extraer_pilotos():
                 if lugarImagen.img:
                     imagen = lugarImagen.img['src']
                 else:
-                    imagen = "No documentado"
+                    imagen = "/static/media/perfil-de-usuario.webp" #imagen predeterminada
     
                 nacionalidad = spiloto.find("div", class_="overview-blocks").find_all("div",class_="value")[2].text.strip()
                 pais = traduce_nacionalidades(nacionalidad)
@@ -202,7 +212,7 @@ def extraer_escuderias():
                 if lugarImagen.img:
                     imagen = lugarImagen.img['src']
                 else:
-                    imagen = "No documentado"
+                    imagen = "/static/media/Imagen_no_disponible.png"
                 
                 nacionalidad = sEscuderia.find("div", class_="stats-block").find_all("div")[1].text.strip()
                 pais = traduce_nacionalidades(nacionalidad)
@@ -256,21 +266,28 @@ def traduce_nacionalidades(nacionalidad):
     mapeo = {
         "Spanish": "España",
         "British": "Gran Bretaña",
+        "Irish": "Irlanda",
         "French": "Francia",
         "German": "Alemania",
+        "East German": "Alemania",
         "Italian": "Italia",
         "American": "Estados Unidos",
+        "American-Italian":"Estados Unidos e Italia",
         "Australian": "Australia",
         "Canadian": "Canadá",
         "Japanese": "Japón",
         "Brazilian": "Brasil",
         "Mexican": "México",
         "Argentinian": "Argentina",
+        "Argentine":"Argentina",
+        "Argentine-Italian":"Argentina e Italia",
         "Dutch": "Países Bajos",
         "Belgian": "Bélgica",
+        "Belgium":"Bélgica",
         "Swiss": "Suiza",
         "Austrian": "Austria",
         "Russian": "Rusia",
+        "Rhodesian":"República de Rodesia",
         "Chinese": "China",
         "Indian": "India",
         "Swedish": "Suecia",
@@ -297,7 +314,11 @@ def traduce_nacionalidades(nacionalidad):
         "Greek": "Grecia",
         "Israeli": "Israel",
         "Iranian": "Irán",
-        "Egyptian": "Egipto"
+        "Egyptian": "Egipto",
+        "Uruguayan": "Uruguay",
+        "Liechtensteiner":"Liechtenstein",
+        "New Zealand": "Nueva Zelanda",
+        "Hong Kong": "Hong Kong",
     }
 
     if nacionalidad in mapeo.keys():
@@ -318,6 +339,7 @@ def populateDB():
     Temporada.objects.all().delete()
     Equipo.objects.all().delete()
     Piloto.objects.all().delete()
+    EquiposYPilotos.objects.all().delete()
 
     listaCircuitos= extraer_circuitos()
     num_circuitos = 1
@@ -340,12 +362,13 @@ def populateDB():
 
             dicccionarioTemporada = dict()            
             for infoPiloto in temporada[1].split(","): #Cadena del tipo: Piloto|Equipo|puntosPiloto,Piloto|...
-                nombre, equipo, puntosPiloto = infoPiloto.split("|")
-                dicccionarioTemporada[nombre]= {"equipo": equipo, "puntosPiloto": float(puntosPiloto)}
+                posicion, nombre, equipo, puntosPiloto = infoPiloto.split("|")
+                dicccionarioTemporada[posicion]= {"nombre": nombre, "equipo": equipo, "puntosPiloto": float(puntosPiloto)}
 
             datos_json = json.dumps(dicccionarioTemporada)#, indent=4)
 
-            t = Temporada.objects.create(id=num_temporadas, anyo=temporada[0], tablaPilotos=datos_json)
+            t = Temporada.objects.create(id=num_temporadas, anyo=temporada[0], tablaPilotos=datos_json,
+                                         imagenHistorica=temporada[2])
             t.save()
             num_temporadas = num_temporadas + 1
 
@@ -378,7 +401,7 @@ def populateDB():
             num_pilotos = num_pilotos + 1
     print("Se ha completado el poblado de Pilotos")
 
-    ################ MANY TO MANY EQUIPOSYPILOTOS ##################
+    ###############MANY TO MANY EQUIPOSYPILOTOS ##################
 
     for datos in listaEquipos:
         equipo = Equipo.objects.get(nombre=datos[0])
@@ -421,7 +444,7 @@ def populateWhooshCircuitos():
 
 def populateWhooshTemporadas():
     #define el esquema de la información
-    schem = Schema(idTemporada=NUMERIC(stored=True), anyo=NUMERIC(stored=True,numtype=int), datos=KEYWORD(stored=True,commas=True,lowercase=True))
+    schem = Schema(idTemporada=NUMERIC(stored=True), anyo=NUMERIC(stored=True,numtype=int), datos=KEYWORD(stored=True,commas=True,lowercase=True), imagen=TEXT(stored=True,phrase=True))
 
     #eliminamos el directorio del índice, si existe
     if os.path.exists("IndexTemporadas"):
@@ -436,7 +459,7 @@ def populateWhooshTemporadas():
     lista=extraer_temporadas()
     for t in lista:
         #añade cada temporada de la lista al índice
-        writer.update_document(idTemporada=numTemporadas, anyo=int(str(t[0])), datos=str(t[1]))    
+        writer.update_document(idTemporada=numTemporadas, anyo=int(str(t[0])), datos=str(t[1]), imagen=str(t[2]))    
         numTemporadas+=1
     writer.commit()
     print("Carga de Whoosh de temporadas completada con éxito")

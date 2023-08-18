@@ -1,0 +1,41 @@
+{% extends 'header.html' %}
+
+{% block content %}
+{% comment %} {% load static %} {% endcomment %}
+<body class="body"> 
+<div class="container">
+
+    <div class="row list-circuitos-presentacion">
+        <div class="list-circuitos-title text-center">Temporadas de Fórmula 1 (1950 - 2022)</div>
+        <hr class="divider" />
+        {% comment %} <div class="list-circuitos-buscador text-center">#TODO: Buscador y descripción de la página (breve)</div> {% endcomment %}
+    </div>
+
+    <div id="portfolio">
+        <div class="container-fluid p-0">
+            <div class="row g-0 row-circuitos">
+                {% for t, ganador in temporadas_ganadores %}
+                <div class="col-lg-2 col-sm-6">
+                    <a class="portfolio-box" href="/temporadas/{{ t.anyo }}" title="{{ t.anyo }}">
+                        <img class="img-fluid" src="{{ t.imagenHistorica }}" alt="..." />
+                        <div class="portfolio-box-caption p-3">
+                            <div class="project-category text-white-50" id="paisCircuito">Ganador: {{ ganador|title }}</div>
+                            <div class="project-name" id="nombreTrazado">{{ t.anyo }}</div>
+                            {% comment %} ...|title pone en mayúsculas las iniciales {% endcomment %}
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<footer class="bg-light py-5">
+    <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2023 - TFG - Universidad de Sevilla</div></div>
+</footer>
+
+{% endblock %}
+
