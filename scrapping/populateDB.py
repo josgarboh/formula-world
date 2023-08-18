@@ -6,7 +6,7 @@ from tkinter import messagebox
 import re, os, shutil
 
 from django.shortcuts import redirect, render
-from web.models import Circuito, Temporada
+from web.models import Circuito, Equipo, EquiposYPilotos, Piloto, Temporada
 from whoosh.index import create_in,open_dir
 from whoosh.fields import Schema, TEXT, NUMERIC, KEYWORD, ID
 from whoosh.qparser import QueryParser
@@ -113,17 +113,211 @@ def extraer_temporadas():
     print("Extracción de temporadas completada")   
     return ls
 
+def extraer_pilotos():
+    anyoComienzo=1950
+    anyoFinal=2023
+    lista=[]
+    listaUrls=[] #La usaremos para no entrar en pilotos ya consultados    
+    for anyo in range(anyoComienzo, anyoFinal+1): #range llega hasta 2023-1, por eso ponemos el +1
+    
+        url="https://pitwall.app/drivers/archive/"+str(anyo)
+        f = urllib.request.urlopen(url)
+        s = BeautifulSoup(f,"lxml")      
+       
+        pilotos = s.find("table",class_="data-table").tbody.find_all("tr")
+        for pil in pilotos:
+            urlpiloto = "https://pitwall.app" + pil.td.a['href']
+            if urlpiloto not in listaUrls:            
+                listaUrls.append(urlpiloto) #url ya visitada
+                fpiloto = urllib.request.urlopen(urlpiloto)
+                spiloto = BeautifulSoup(fpiloto, "lxml")
+                
+                nombre = spiloto.find("div", id="breadcrumbs").find_all("span")[4].a.text.strip().lower()
+                print(nombre) #mas o menos para llevar un conteo
 
+                #ESCUDO (algunas vienen sin él)
+                lugarImagen = spiloto.find("div", class_="image")
+                if lugarImagen.img:
+                    imagen = lugarImagen.img['src']
+                else:
+                    imagen = "No documentado"
+    
+                nacionalidad = spiloto.find("div", class_="overview-blocks").find_all("div",class_="value")[2].text.strip()
+                pais = traduce_nacionalidades(nacionalidad)
+    
+                #campeonatosMundiales y temporadas
+                temporadas=[]
+                campeonatosMundiales = []
+                filasTemporadas = spiloto.find("table", class_="data-table").tbody.find_all("tr")
+                for temporada in filasTemporadas:
+                    columnas = temporada.find_all("td")
+                    temporadas.append(columnas[0].a.text) #lista con los años presente en F1
+                    if columnas[1].text.strip() == "1st":
+                        campeonatosMundiales.append(columnas[0].a.text)
+    
+                temporadasTexto = ",".join(temporadas)       
+                campeonatosMundialesTexto = ",".join(campeonatosMundiales)
+    
+                #Seccion de victorias,podios,puntos
+                seccionDatos = spiloto.find("div", id="show-driver").find_all("div", class_="section")[1].div.find_all("div", class_="stats-block")
+                for dato in seccionDatos:
+                    if dato.div.text.strip() == "Wins":
+                        victoriasHistorico = int(dato.find_all("div")[1].text.strip())
+                    elif dato.div.text.strip() == "Podiums":
+                        podiosHistorico = int(dato.find_all("div")[1].text.strip())
+                    elif dato.div.text.strip() == "Points":
+                        puntosHistorico  = float(dato.find_all("div")[1].text.strip())
+                
+                lista.append((nombre,pais,imagen,victoriasHistorico,podiosHistorico,puntosHistorico,
+                              temporadasTexto,campeonatosMundialesTexto))
+    
+    print("Se ha completado la extracción de Pilotos")
+    print("Numero de pilotos: " + str(len(lista)))
+    return lista
+
+def extraer_escuderias():
+    anyoComienzo=1950
+    anyoFinal=2023
+    lista=[]
+    listaUrls=[] #La usaremos para no entrar en escuderías ya consultadas
+    for anyo in range(anyoComienzo, anyoFinal+1): #range llega hasta 2023-1, por eso ponemos el +1
+    
+        url="https://pitwall.app/teams/archive/"+str(anyo)
+        f = urllib.request.urlopen(url)
+        s = BeautifulSoup(f,"lxml")      
+       
+        escuderias = s.find("table",class_="data-table").tbody.find_all("tr")
+        for esc in escuderias:
+            urlEscuderia = "https://pitwall.app" + esc.td.a['href']
+            if urlEscuderia not in listaUrls:            
+                listaUrls.append(urlEscuderia) #url ya visitada
+                fEscuderia = urllib.request.urlopen(urlEscuderia)
+                sEscuderia = BeautifulSoup(fEscuderia, "lxml")
+                               
+                nombre = sEscuderia.find("div", class_="title").h1.text.strip().lower()
+                print(nombre)
+                
+                #ESCUDO (algunas vienen sin él)
+                lugarImagen = sEscuderia.find("div", class_="image")
+                if lugarImagen.img:
+                    imagen = lugarImagen.img['src']
+                else:
+                    imagen = "No documentado"
+                
+                nacionalidad = sEscuderia.find("div", class_="stats-block").find_all("div")[1].text.strip()
+                pais = traduce_nacionalidades(nacionalidad)
+                
+                #campeonatosMundiales y temporadas
+                temporadas=[]
+                campeonatosMundiales = []
+                filasTemporadas = sEscuderia.find("table", class_="data-table").tbody.find_all("tr")
+                for temporada in filasTemporadas:
+                    columnas = temporada.find_all("td")
+                    temporadas.append(columnas[0].a.text) #lista con los años presente en F1
+                    if columnas[1].text.strip() == "1st":
+                        campeonatosMundiales.append(columnas[0].a.text)
+                        
+                temporadasTexto = ",".join(temporadas)       
+                campeonatosMundialesTexto = ",".join(campeonatosMundiales)
+                
+                secciones = sEscuderia.find("div", id="show-constructor").find_all("div", class_="section")
+                
+                #Seccion de victorias,podios,puntos
+                seccionDatos = secciones[1].div.find_all("div", class_="stats-block")
+                victoriasHistorico = int(seccionDatos[3].find("div",class_="value").text)
+                podiosHistorico    = int(seccionDatos[5].find("div",class_="value").text)
+                puntosHistorico  = float(seccionDatos[6].find("div",class_="value").text)
+                
+                #Pilotos: debemos hacer distinción entre escuderías activas (una sección más) y retiradas
+                pilotos=[] #No se repetirán porque unicamente entramos una vez en cada escudería
+                if len(secciones) == 3: #Escudería "vieja"
+                    filasPilotos = secciones[2].table.tbody.find_all("tr")
+                    for fila in filasPilotos:
+                        pilotos.append(fila.find_all("td")[0].a.text.lower())
+                        
+                else: #escudería activa
+                    filasPilotos1 = secciones[2].table.tbody.find_all("tr")
+                    filasPilotos2 = secciones[3].table.tbody.find_all("tr")
+                    for fila in filasPilotos1:
+                        pilotos.append(fila.find_all("td")[0].a.text.strip().lower())
+                    for fila in filasPilotos2:
+                        pilotos.append(fila.find_all("td")[0].a.text.strip().lower())
+                
+                pilotosTexto = ",".join(pilotos)
+                
+                lista.append((nombre,pais,imagen,victoriasHistorico,podiosHistorico,puntosHistorico,
+                              temporadasTexto,campeonatosMundialesTexto,pilotosTexto))
+                
+    print("Se ha completado la extracción de Escuderías")
+    return lista
+
+#Traducción de gentilicios en inglés a paises en español
+def traduce_nacionalidades(nacionalidad):
+    mapeo = {
+        "Spanish": "España",
+        "British": "Gran Bretaña",
+        "French": "Francia",
+        "German": "Alemania",
+        "Italian": "Italia",
+        "American": "Estados Unidos",
+        "Australian": "Australia",
+        "Canadian": "Canadá",
+        "Japanese": "Japón",
+        "Brazilian": "Brasil",
+        "Mexican": "México",
+        "Argentinian": "Argentina",
+        "Dutch": "Países Bajos",
+        "Belgian": "Bélgica",
+        "Swiss": "Suiza",
+        "Austrian": "Austria",
+        "Russian": "Rusia",
+        "Chinese": "China",
+        "Indian": "India",
+        "Swedish": "Suecia",
+        "Danish": "Dinamarca",
+        "Finnish": "Finlandia",
+        "Norwegian": "Noruega",
+        "Portuguese": "Portugal",
+        "South African": "Sudáfrica",
+        "Korean": "Corea del Sur",
+        "Monegasque": "Mónaco",
+        "New Zealander": "Nueva Zelanda",
+        "Venezuelan": "Venezuela",
+        "Colombian": "Colombia",
+        "Chilean": "Chile",
+        "Polish": "Polonia",
+        "Hungarian": "Hungría",
+        "Romanian": "Rumania",
+        "Czech": "República Checa",
+        "Singaporean": "Singapur",
+        "Malaysian": "Malasia",
+        "Indonesian": "Indonesia",
+        "Thai": "Tailandia",
+        "Turkish": "Turquía",
+        "Greek": "Grecia",
+        "Israeli": "Israel",
+        "Iranian": "Irán",
+        "Egyptian": "Egipto"
+    }
+
+    if nacionalidad in mapeo.keys():
+        return(mapeo.get(nacionalidad))
+    else:
+        return("Sin traducción: " + str(nacionalidad))
 
 #función auxiliar que hace scraping en la web y carga los datos en la base datos
 def populateDB():
     #variables para contar el número de registros que vamos a almacenar
     num_circuitos = 0
     num_temporadas = 0
+    num_equipos = 0
+    num_pilotos = 0   
     
     #borramos todas las tablas de la BD
     Circuito.objects.all().delete()
     Temporada.objects.all().delete()
+    Equipo.objects.all().delete()
+    Piloto.objects.all().delete()
 
     listaCircuitos= extraer_circuitos()
     num_circuitos = 1
@@ -157,8 +351,47 @@ def populateDB():
 
     print("Se ha completado el poblado de Temporadas")
 
+    listaEquipos= extraer_escuderias()
+    num_equipos = 1
+    for equipo in listaEquipos:
+        if not Equipo.objects.filter(nombre=equipo[0]).exists():
+            e = Equipo.objects.create(id=num_equipos, nombre= equipo[0], pais = equipo[1], imagen = equipo[2],
+                                     victoriasHistorico = equipo[3], podiosHistorico = equipo[4],
+                                     puntosHistorico = equipo[5], temporadas = equipo[6],
+                                     campeonatosMundiales = equipo[7]) #pilotos = equipo[8]
+            
+            e.save()
+            num_equipos = num_equipos + 1
+    
+    print("Se ha completado el poblado de Equipos")
+
+    listaPilotos= extraer_pilotos()
+    num_pilotos = 1
+    for piloto in listaPilotos:
+        if not Piloto.objects.filter(nombre=piloto[0]).exists():
+            p = Piloto.objects.create(id=num_pilotos, nombre= piloto[0], pais = piloto[1], imagen = piloto[2],
+                                     victoriasHistorico = piloto[3], podiosHistorico = piloto[4],
+                                     puntosHistorico = piloto[5], temporadas = piloto[6],
+                                     campeonatosMundiales = piloto[7])
+            
+            p.save()
+            num_pilotos = num_pilotos + 1
+    print("Se ha completado el poblado de Pilotos")
+
+    ################ MANY TO MANY EQUIPOSYPILOTOS ##################
+
+    for datos in listaEquipos:
+        equipo = Equipo.objects.get(nombre=datos[0])
+        pilotosStr = datos[8].split(",")
+        for nombrePiloto in pilotosStr:
+            print(nombrePiloto)
+            piloto = Piloto.objects.get(nombre=nombrePiloto)
+            EquiposYPilotos.objects.create(piloto=piloto, equipo=equipo)
+    
+    print("Relación entre equipos y pilotos poblada")
+
     print("Poblado de la base de datos completado")
-    return (num_circuitos-1, num_temporadas-1)
+    return (num_circuitos-1, num_temporadas-1, num_equipos-1, num_pilotos-1)
 
 
 def populateWhooshCircuitos():
@@ -209,3 +442,5 @@ def populateWhooshTemporadas():
     print("Carga de Whoosh de temporadas completada con éxito")
 
     return numTemporadas-1
+
+## TODO: POPULATEWHOOSH PILOTOS Y EQUIPOS

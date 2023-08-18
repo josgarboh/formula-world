@@ -25,40 +25,57 @@ class Circuito(models.Model):
     def __str__(self):
         return self.nombre 
 
-class Piloto(models.Model):
-    id = models.IntegerField(primary_key=True)
-    nombre = models.CharField(max_length=100, blank=False, null=False)
-    victoriasHistorico = models.IntegerField(blank=False, null=False)
-    podiosHistorico = models.IntegerField(blank=False, null=False)
-    puntosHistorico = models.FloatField(blank=False, null=False)
-    campeonatosMundiales = models.CharField(max_length=200, blank=True, null=True)
-    imagen = models.URLField(null=True, validators=[URLValidator()])
-
-    temporadas = models.ManyToManyField(Temporada, blank=False)
-
-    def __str__(self):
-        return self.nombre
-    
-    def listaCampeonatosMundiales(texto):
-        return texto.split(",")
-
 class Equipo(models.Model):
     id = models.IntegerField(primary_key=True)
     nombre = models.CharField(max_length=100, blank=False, null=False)
+    pais = models.CharField(max_length=50, blank=False, null=False)
+    victoriasHistorico = models.IntegerField(blank=False, null=False)
+    podiosHistorico = models.IntegerField(blank=False, null=False)
+    puntosHistorico = models.FloatField(blank=False, null=False)
+    campeonatosMundiales = models.CharField(max_length=200, blank=True, null=True)
+    temporadas = models.CharField(max_length=200, blank=False, null=False)
+    imagen = models.URLField(null=True, validators=[URLValidator()])
+    
+    #pilotos = models.ManyToManyField(Piloto, blank=False)
+
+    def __str__(self):
+        return self.nombre
+    
+    def listaCampeonatosMundiales(self):
+        return self.campeonatosMundiales.split(",")
+    
+    def listaTemporadas(self):
+        return self.temporadas.split(",")
+    
+    # def listaPilotos(self):
+    #     return self.pilotos.split(",")
+    
+class Piloto(models.Model):
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=100, blank=False, null=False)
+    pais = models.CharField(max_length=50, blank=False, null=False)
     victoriasHistorico = models.IntegerField(blank=False, null=False)
     podiosHistorico = models.IntegerField(blank=False, null=False)
     puntosHistorico = models.FloatField(blank=False, null=False)
     campeonatosMundiales = models.CharField(max_length=200, blank=True, null=True)
     imagen = models.URLField(null=True, validators=[URLValidator()])
+    temporadas = models.CharField(max_length=200, blank=True, null=True)
 
-    temporadas = models.ManyToManyField(Temporada, blank=False)
-    pilotos = models.ManyToManyField(Piloto, blank=False)
+    #equipos = models.ManyToManyField(Equipo, blank=False, through='EquiposYPilotos')
 
     def __str__(self):
         return self.nombre
     
-    def listaCampeonatosMundiales(texto):
-        return texto.split(",")
+    def listaCampeonatosMundiales(self):
+        return self.campeonatosMundiales.split(",")
+
+class EquiposYPilotos(models.Model):
+    piloto = models.ForeignKey(Piloto, on_delete=models.CASCADE)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+    #temporadas = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.piloto.__str__ + " - " + self.equipo.__str__
 
 
 class User(AbstractUser):
