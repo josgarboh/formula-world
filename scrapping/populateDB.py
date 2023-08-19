@@ -90,7 +90,6 @@ def extraer_temporadas():
     anyoFinal = 2022
     ls = []
 
-
     for anyo in range(anyoComienzo, anyoFinal+1): #[)
 
         #Extra: Imagen histórica de cada temporada (campeón, coche dominante, etcétera)

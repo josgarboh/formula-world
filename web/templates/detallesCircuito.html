@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'header_footer.html' %}
 
 {% block content %}
 <body class="body"> 
 <div class="container">
 
-    <div class="row">
+    <div class="row text-center" id="infoCircuitoRow">
         <div class="col-md-5">
             <div class="imagen-trazado">
                 <img class="img-thumbnail" src="{{ cir.imagen }}">
@@ -13,15 +13,22 @@
 
         <div class="col-md-5">
             <div class="card detalles-circuito">
-                <h1> {{ cir.nombre }} </h1>
-
-                <div class="b" style="float:left;">
-                    <h4>Información:</h4>
-                    <p>{{ cir.tipo }}</p>
-                    <p>{{ cir.pais }}</p>
-                    <p>{{ cir.edicionesDisputadas }}</p>
-                    <p>{{ cir.longitud }}</p>
-                </div>
+                <h2> {{ cir.nombre }} </h2>
+                <br>
+                <table>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Pais</th>
+                        <th>Grandes Premios</th>
+                        <th>Longitud</th>
+                    </tr>
+                    <tr>
+                        <td>{{ cir.tipo|title }}</td>
+                        <td>{{ cir.pais }}</td>
+                        <td>{{ cir.edicionesDisputadas }}</td>
+                        <td>{{ cir.longitud }}</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

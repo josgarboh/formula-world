@@ -1,7 +1,7 @@
 /* TODAS LAS PÁGINAS */
 
 body.body {
-    background-color: rgba(49,87,207,0.15);
+    background-color: rgba(49,87,207,0.15);    
 }
 
 div.row {
@@ -78,5 +78,13 @@ div.row-circuitos {
 .imagen-trazado {
     width: 100%;
     height: auto;
+}
+
+#infoCircuitoRow {
+    align-items: center;
+}
+
+div.detalles-circuito {
+    padding: 5%;
 }
 
