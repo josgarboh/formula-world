@@ -50,6 +50,7 @@ class Equipo(models.Model):
     
     # def listaPilotos(self):
     #     return self.pilotos.split(",")
+
     
 class Piloto(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -69,6 +70,9 @@ class Piloto(models.Model):
     
     def listaCampeonatosMundiales(self):
         return self.campeonatosMundiales.split(",")
+    
+    def equipos_asociados(self):
+        return Equipo.objects.filter(equiposypilotos__piloto=self)
 
 class EquiposYPilotos(models.Model):
     piloto = models.ForeignKey(Piloto, on_delete=models.CASCADE)

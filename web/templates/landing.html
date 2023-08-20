@@ -28,8 +28,8 @@
                     <ul class="navbar-nav ms-auto my-2 my-lg-0">
                         <li class="nav-item"><a class="nav-link" href="#presentacion">Innovación</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contenido">Contenido</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#portfolio">Accesos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#contact">POROPON</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#enlaces">Accesos</a></li>
+                        {% comment %} <li class="nav-item"><a class="nav-link" href="#contact">POROPON</a></li> {% endcomment %}
                     </ul>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-lg-8 align-self-baseline">
                         <p class="text-white-modified mb-5">¡El rincón para los fanáticos de la Fórmula 1!</p>
-                        <a class="btn btn-primary btn-xl" href="#portfolio">Arrancar motores</a>
+                        <a class="btn btn-primary btn-xl" href="#enlaces">Arrancar motores</a>
                     </div>
                 </div>
             </div>
@@ -99,41 +99,41 @@
                 </div>
             </div>
         </section>
-        <!-- Portfolio-->
-        <div id="portfolio">
+        <!-- Enlaces-->
+        <div id="enlaces">
             <div class="container-fluid p-0">
                 <div class="row g-0">
                     <div class="col-lg-6 col-sm-6">
-                        <a class="portfolio-box" href="/circuitos" title="CIRCUITOS">
+                        <a class="enlaces-box" href="{% url 'listaCircuitos' %}" title="CIRCUITOS">
                             <img class="img-fluid" src="/static/media/accesosLanding/spaCircuito.avif" alt="..." />
-                            <div class="portfolio-box-caption">
+                            <div class="enlaces-box-caption">
                                 <div class="project-category text-white-50">Categoría</div>
                                 <div class="project-name">CIRCUITOS</div>
                             </div>
                         </a>
                     </div>
                     <div class="col-lg-6 col-sm-6">
-                        <a class="portfolio-box" href="{% url 'listaCircuitos' %}" title="Project Name">
+                        <a class="enlaces-box" href="{% url 'listaPilotos' %}" title="PILOTOS">
                             <img class="img-fluid" src="/static/media/accesosLanding/F1-2023-drivers-scaled.jpeg" alt="..." />
-                            <div class="portfolio-box-caption">
+                            <div class="enlaces-box-caption">
                                 <div class="project-category text-white-50">Categoría</div>
                                 <div class="project-name">PILOTOS</div>
                             </div>
                         </a>
                     </div>
                     <div class="col-lg-6 col-sm-6">
-                        <a class="portfolio-box" href="#" title="Project Name">
+                        <a class="enlaces-box" href="{% url 'listaEscuderias'}" title="ESCUDERIAS">
                             <img class="img-fluid" src="/static/media/accesosLanding/escuderias.jpg" alt="..." />
-                            <div class="portfolio-box-caption">
+                            <div class="enlaces-box-caption">
                                 <div class="project-category text-white-50">Categoría</div>
                                 <div class="project-name">ESCUDERÍAS</div>
                             </div>
                         </a>
                     </div>
                     <div class="col-lg-6 col-sm-6">
-                        <a class="portfolio-box" href="{% url 'listaTemporadas' %}" title="Project Name">
+                        <a class="enlaces-box" href="{% url 'listaTemporadas' %}" title="TEMPORADAS">
                             <img class="img-fluid" src="/static/media/accesosLanding/Mika-Hakkinen-y-Michael-Schumacher.jpg" alt="..." />
-                            <div class="portfolio-box-caption">
+                            <div class="enlaces-box-caption">
                                 <div class="project-category text-white-50">Categoría</div>
                                 <div class="project-name">TEMPORADAS</div>
                             </div>
@@ -154,10 +154,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
         <!-- Core theme JS-->
         <script src="/static/js/scripts_landing.js"></script>
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <!-- * *                               SB Forms JS                               * *-->
-        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>

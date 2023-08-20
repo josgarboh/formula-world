@@ -1,0 +1,59 @@
+{% extends 'header_footer.html' %}
+
+{% block content %}
+<body class="body"> 
+<div class="container">
+
+    <div class="row text-center" id="infoCircuitoRow">
+        <div class="col-md-5">
+            <div class="imagen-trazado">
+                <img class="img-thumbnail" src="{{ equipo.imagen }}">
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card detalles-circuito">
+                <h2> {{ equipo.nombre|title }} </h2>
+                <br>
+                <table>
+                    <tr>
+                        <th>País</th>
+                        <th>Victorias</th>
+                        <th>Podios</th>
+                        <th>Campeonatos</th>
+                    </tr>
+                    <tr>
+                        <td>{{ equipo.pais }}</td>
+                        <td>{{ equipo.victoriasHistorico }}</td>
+                        <td>{{ equipo.podiosHistorico }}</td>
+                        <td>{{ numeroMundiales }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center" id="infoCircuitoRow">
+        <div class="card detalles-circuito">
+            <table>
+                <tr>
+                    <th>Campeonatos (años)</th>
+                    {% comment %} <th>Equipos</th> {% endcomment %}
+                </tr>
+                <tr>
+                    <td>{% for m in listaMundiales%}
+                        {{ m }}
+                        <br>
+                        {% endfor %}
+                    </td>
+                    {% comment %} <td>{% for e in equiposDelPiloto %}
+                        {{ e.pais|title }},{% endfor %}
+                    </td> {% endcomment %}
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>    
+{% endblock %}

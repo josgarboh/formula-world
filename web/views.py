@@ -1,6 +1,8 @@
 import json
+from django.http import Http404
 from django.shortcuts import render
-from web.models import Circuito,Temporada
+from django.core.paginator import Paginator
+from web.models import Circuito, Piloto,Temporada, Equipo
 
 def landing(request):
     return render(request, 'landing.html')
@@ -8,8 +10,10 @@ def landing(request):
 def index(request):
     return render(request, 'home.html')
 
+############## CIRCUITOS
+
 def list_circuitos(request):
-    circuitos = Circuito.objects.all().order_by('id')
+    circuitos = Circuito.objects.all().order_by('-edicionesDisputadas')
     return render(request, 'listCircuitos.html', {'circuitos':circuitos})
 
 def detallesCircuito(request, idEntrada):
@@ -43,22 +47,84 @@ def detallesTemporada(request, anyoEntrada):
         puntos = datos['puntosPiloto']
         mundialPilotos.append({'posicion': posicion, 'nombre': nombre, 'equipo': equipo, 'puntos': puntos})
 
-
-    #Descartamos de momento
-    #MUNDIAL DE CONSTRUCTORES: lo haremos sumando los puntos de los pilotos que hayan corrido para la escudería ese año
-    
-    # mundialConstructores = dict() # {equipo:puntos}
-    # for diccionarioPiloto in mundialPilotos:
-    #     equipo = diccionarioPiloto['equipo']#.title()
-    #     if equipo not in mundialConstructores.keys():
-    #         mundialConstructores[equipo] = diccionarioPiloto['puntos']
-    #     else:
-    #        puntos = mundialConstructores.get(equipo)
-    #        puntos +=  diccionarioPiloto['puntos']
-    #        mundialConstructores[equipo] = puntos
-
-    # #ordenamos de mayor a menos puntuación
-    # mundialConstructores = dict(sorted(mundialConstructores.items(), key= lambda x:x[1], reverse=True))
-    # print(mundialConstructores)    
-
     return render(request, 'detallesTemporada.html', {'temporada':temporada, 'mundialPilotos':mundialPilotos})
+
+
+################# PILOTOS ##########
+
+def list_pilotos(request):
+    pilotos = Piloto.objects.all().order_by('-victoriasHistorico')
+    page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
+
+    try:
+        paginator = Paginator(pilotos, 50)  # 50 pilotos en cada página
+        pilotos = paginator.page(page)
+    except: #si la página no existe
+        raise Http404
+
+    # Se pasa pilotos como 'entity' para reutilizar paginator.html
+    return render(request, 'listPilotos.html', {'entity':pilotos, 'paginator':paginator})
+
+def detallesPiloto(request, idEntrada):
+    piloto = Piloto.objects.get(id=idEntrada)
+    equiposDelPiloto = piloto.equipos_asociados()
+    listaMundiales = piloto.listaCampeonatosMundiales()
+
+    if listaMundiales[0] == "":
+        numeroMundiales = 0
+        listaMundiales = ""
+        datos = {
+        'piloto':piloto,
+        'equiposDelPiloto':equiposDelPiloto,
+        'listaMundiales':listaMundiales,
+        'numeroMundiales':numeroMundiales
+        }  
+    else:
+        numeroMundiales = len(listaMundiales)
+        datos = {
+        'piloto':piloto,
+        'equiposDelPiloto':equiposDelPiloto,
+        'listaMundiales':listaMundiales,
+        'numeroMundiales':numeroMundiales
+        }  
+
+    return render(request, 'detallesPiloto.html', datos)
+
+####################### EQUIPOS ##############
+
+def list_equipos(request):
+    equipos = Equipo.objects.all().order_by('-victoriasHistorico')
+    page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
+
+    try:
+        paginator = Paginator(equipos, 50)  # 50 equipos en cada página
+        equipos = paginator.page(page)
+    except: #si la página no existe
+        raise Http404
+
+    # Se pasa equipos como 'entity' para reutilizar paginator.html
+    return render(request, 'listEquipos.html', {'entity':equipos, 'paginator':paginator})
+
+def detallesEquipo(request, idEntrada):
+    equipo = Equipo.objects.get(id=idEntrada)
+    listaMundiales = equipo.listaCampeonatosMundiales()
+
+    #Hay un pequeño bug con la lista vacía, da como mínimo un mundial a cada uno
+    if listaMundiales[0] == "":
+        numeroMundiales = 0
+        listaMundiales = ""
+        datos = {
+        'equipo':equipo,
+        'listaMundiales':listaMundiales,
+        'numeroMundiales':numeroMundiales
+        }  
+    else:
+        numeroMundiales = len(listaMundiales)
+        datos = {
+        'equipo':equipo,
+        'listaMundiales':listaMundiales,
+        'numeroMundiales':numeroMundiales
+        }  
+
+    return render(request, 'detallesEquipo.html', datos)
+

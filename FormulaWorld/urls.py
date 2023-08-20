@@ -33,5 +33,11 @@ urlpatterns = [
     path('temporadas/', views.list_temporadas, name= "listaTemporadas"),
     path('temporada/<int:anyoEntrada>', views.detallesTemporada),
 
+    path('pilotos/', views.list_pilotos, name= "listaPilotos"),
+    path('piloto/<int:idEntrada>', views.detallesPiloto),
+
+    path('equipos/', views.list_equipos, name= "listaEquipos"),
+    path('equipo/<int:idEntrada>', views.detallesEquipo),
+
     path('', include("authentication.urls")),
 ]
