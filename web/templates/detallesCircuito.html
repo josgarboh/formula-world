@@ -33,6 +33,14 @@
         </div>
     </div>
 
+    <div class="row votar-row">
+        <form method="post" action="{% url 'votar_objeto' modelo="circuito" objeto_id=cir.id %}">
+            {% csrf_token %}
+            <button type="submit" name="accion" value="vota_si">¡Me gusta!</button>
+        </form>
+        
+    </div>
+
     <div class="b" style="float: right;"></div>
 
 </div>

@@ -28,16 +28,19 @@ urlpatterns = [
    #path('cargaWhoosh/', scrappingviews.cargaWhoosh, name="cargaWhoosh"),
 
     path('circuitos/', views.list_circuitos, name = "listaCircuitos"),
-    path('circuito/<int:idEntrada>', views.detallesCircuito),
+    path('circuito/<int:idEntrada>', views.detallesCircuito, name = "detallesCircuito"),
 
     path('temporadas/', views.list_temporadas, name= "listaTemporadas"),
-    path('temporada/<int:anyoEntrada>', views.detallesTemporada),
+    path('temporada/<int:anyoEntrada>', views.detallesTemporada, name = "detallesTemporada"),
 
     path('pilotos/', views.list_pilotos, name= "listaPilotos"),
-    path('piloto/<int:idEntrada>', views.detallesPiloto),
+    path('piloto/<int:idEntrada>', views.detallesPiloto, name = "detallesPiloto"),
 
     path('equipos/', views.list_equipos, name= "listaEquipos"),
-    path('equipo/<int:idEntrada>', views.detallesEquipo),
+    path('equipo/<int:idEntrada>', views.detallesEquipo, name = "detallesEquipo"),
+
+    #Voto
+    path('votar/<str:modelo>/<int:objeto_id>/', views.votar_objeto, name='votar_objeto'),
 
     path('', include("authentication.urls")),
 ]

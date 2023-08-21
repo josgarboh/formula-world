@@ -77,6 +77,13 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
+        #INNECESARIO: "user" ESTÁ ACTIVADO EN TODAS LAS PLANTILLAS POR DEFECTO
+        #Acceder a user_authenticated desde cualquier vista
+        # 'OPTIONS': {
+        #     'context_processors': [
+        #         'web.context_processors.user_authenticated',
+        #     ],
+        # },
     },
 ]
 

@@ -22,13 +22,26 @@
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="{% url 'landing' %}">F1 World</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon" style="background-color: lightsteelblue;"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
                 <li class="nav-item"><a class="nav-link" href="{% url 'listaCircuitos' %}">Circuitos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listaTemporadas' %}">Temporadas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Escuderías</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Pilotos</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'listaEquipos' %}">Escuderías</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'listaPilotos' %}">Pilotos</a></li>
+                <!-- Agrega el elemento de menú desplegable para el usuario -->
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropbtn">Cuenta</a>
+                    <div class="dropdown-content">
+                        {% if user.is_authenticated == False %}
+                            <a href="{% url 'register' %}">Registrarse</a>
+                            <a href="{% url 'login' %}">Iniciar Sesión</a>
+                        {% else %}
+                            <a href="{% url 'logout' %}">Cerrar Sesión</a>
+                        <!-- En caso de usuario logueado, mostrar esta opción -->
+                        {% endif %}
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
@@ -37,6 +50,7 @@
 <br><br>
 
 <script src="/static/js/scripts_landing.js"></script>
+<script src="/static/js/header.js"></script>
 
 {% block content %}{% endblock %}
 

@@ -1,14 +1,21 @@
 import json
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
-from web.models import Circuito, Piloto,Temporada, Equipo
+from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
+
+from web.models import Circuito, Piloto,Temporada, Equipo, Voto
+
+
+
 
 def landing(request):
     return render(request, 'landing.html')
 
 def index(request):
     return render(request, 'home.html')
+
 
 ############## CIRCUITOS
 
@@ -128,3 +135,41 @@ def detallesEquipo(request, idEntrada):
 
     return render(request, 'detallesEquipo.html', datos)
 
+
+############################## VOTACIÓN ########################
+
+@login_required
+def votar_objeto(request, modelo, objeto_id):
+    tipoModelo = None
+
+    if modelo == "circuito":
+        tipoModelo = Circuito
+    elif modelo == "temporada":
+        tipoModelo = Temporada
+    elif modelo == "piloto":
+        tipoModelo = Piloto
+    elif modelo == "equipo":
+        tipoModelo = Equipo
+
+    print(modelo)
+    print(tipoModelo)
+
+    if tipoModelo != None:
+        objeto = get_object_or_404(tipoModelo, id = objeto_id)
+        print(objeto)
+        usario_logueado = request.user
+        accion = request.POST.get("accion")
+        print(accion)
+
+        if accion == "vota_si":
+            content_type = ContentType.objects.get_for_model(objeto)
+            print(content_type)
+            voto, created = Voto.objects.get_or_create(usuario = usario_logueado,
+                                                        content_type = content_type,
+                                                          object_id = objeto_id)
+            voto.me_gusta = True
+            voto.save()
+    
+    return redirect("detalles" +modelo.capitalize(), idEntrada=objeto_id)
+
+    
