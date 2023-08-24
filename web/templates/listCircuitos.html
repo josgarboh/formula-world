@@ -4,21 +4,24 @@
 <body class="body"> 
 <div class="container">
 
-    <div class="row list-circuitos-presentacion text-center">
+    <div class="row list-entidades-presentacion text-center">
         <h1 class="text-black font-weight-bold">Circuitos de Fórmula 1 (1950 - 2023)</h1>
         <hr class="divider" />
-        <div class="list-circuitos-buscador">#TODO: Buscador y descripción de la página (breve)</div>
+        <div class="list-entidades-buscador">#TODO: Buscador y descripción de la página (breve)</div>
     </div>
 
     <div id="enlaces">
         <div class="container-fluid p-0">
-            <div class="row g-0 row-circuitos">
+            <div class="row g-0 row-entidades">
                 {% for c in circuitos %}
                 <div class="col-lg-4 col-sm-6">
                     <a class="enlaces-box" href="/circuito/{{ c.id }}" title="{{ c.nombre }}">
-                        <img class="img-fluid" src="{{ c.imagen }}" alt="..." />
+                        {% comment %} <img class="img-fluid" src="{{ c.imagen }}" alt="..." /> {% endcomment %}
+                        <div class="img-container">
+                            <img src="{{ c.imagen }}" alt="Circuito {{ c.nombre }}" />
+                        </div>
                         <div class="enlaces-box-caption p-3">
-                            <div class="project-category text-white-50" id="paisCircuito">{{ c.pais }}</div>
+                            <div class="project-category text-white-50" id="paisEntidad">{{ c.pais }}</div>
                             <div class="project-name" id="nombreTrazado">{{ c.nombre }}</div>
                         </div>
                     </a>

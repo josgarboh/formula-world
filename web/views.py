@@ -27,14 +27,16 @@ def list_circuitos(request):
 #Función que se usará en cada detalles"Modelo" para saber si el usuario ha votado ese modelo o no
 def estadoVoto_AUX(request, modelo, idEntrada):
     if request.user.is_authenticated:
-            usuario_logueado = request.user
-            try:
-                existeVoto = Voto.objects.get(usuario=usuario_logueado,
-                                                content_type= ContentType.objects.get_for_model(modelo),
-                                                object_id = idEntrada)
-                siHaVotado = True
-            except ObjectDoesNotExist:
-                siHaVotado = False
+        usuario_logueado = request.user
+        try:
+            existeVoto = Voto.objects.get(usuario=usuario_logueado,
+                                            content_type= ContentType.objects.get_for_model(modelo),
+                                            object_id = idEntrada)
+            siHaVotado = True
+        except ObjectDoesNotExist:
+            siHaVotado = False
+    else:
+        siHaVotado = False #No es un false como tal, es que el usuario está sin identificar        
 
     return siHaVotado
 

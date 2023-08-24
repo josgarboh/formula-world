@@ -45,9 +45,9 @@ h3.home-subTitle {
     color: white;
 }
 
-/* LISTADO CIRCUITOS */
+/* LISTADO ENTIDADES */
 
-div.list-circuitos-presentacion {
+div.list-entidades-presentacion {
     margin-top: 4%;
 
     color: #0c0c0e;
@@ -57,20 +57,43 @@ div.list-circuitos-presentacion {
     padding: 0.75rem 0;
 }
 
-div.display-circuitos {
+div.display-entidades {
     margin: 1%;
 }
 
-div.row-circuitos {
+div.row-entidades {
     align-items: center;
 }
 
-#paisCircuito {
+#paisEntidad {
     font-size: 120% !important;
 }
 
 #nombreTrazado {
     font-size: 150% !important;
+}
+
+/* Para unificar el tamaño de las imagenes */
+
+.img-container {
+    width: auto;
+    height: 20rem; /* altura uniforme para las imágenes */
+    background-color: transparent; /* Fondo blanco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* DETALLES ENTIDADES (COMÚN) */
+
+div.detalles-entidad {
+    padding: 5%;
 }
 
 /* DETALLES CIRCUITO */
@@ -84,7 +107,9 @@ div.row-circuitos {
     align-items: center;
 }
 
-div.detalles-circuito {
-    padding: 5%;
-}
+/* DETALLES TEMPORADA */
 
+h1.presentacion-temporada {
+    margin-top: 2%;
+    margin-bottom: 3%;
+}

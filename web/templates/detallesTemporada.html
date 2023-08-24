@@ -7,7 +7,9 @@
     <div class="row text-center">
         <div class="col-md-12">
             <div class="imagen-temporada">
-                <h1>Temporada {{ temporada.anyo }} de Fórmula 1</h1>
+                <h1 class="presentacion-temporada">Temporada {{ temporada.anyo }} de Fórmula 1</h1>
+                <br>
+                <h3>Campeón del mundial de Pilotos:</h3>
                 <img class="img-thumbnail" src="{{ temporada.imagenHistorica }}">
             </div>
         </div>
@@ -15,7 +17,7 @@
         
     
     <div class="row text-center">
-        <table border="1" style="background-color:white">
+        <table id="tabla-temporada" border="1" style="background-color:white">
             <tr>
                 <th>Posición</th>
                 <th>Nombre</th>
