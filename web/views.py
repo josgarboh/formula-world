@@ -24,19 +24,24 @@ def list_circuitos(request):
     circuitos = Circuito.objects.all().order_by('-edicionesDisputadas')
     return render(request, 'listCircuitos.html', {'circuitos':circuitos})
 
+#Función que se usará en cada detalles"Modelo" para saber si el usuario ha votado ese modelo o no
+def estadoVoto_AUX(request, modelo, idEntrada):
+    if request.user.is_authenticated:
+            usuario_logueado = request.user
+            try:
+                existeVoto = Voto.objects.get(usuario=usuario_logueado,
+                                                content_type= ContentType.objects.get_for_model(modelo),
+                                                object_id = idEntrada)
+                siHaVotado = True
+            except ObjectDoesNotExist:
+                siHaVotado = False
+
+    return siHaVotado
+
+
 def detallesCircuito(request, idEntrada):
     circuito = Circuito.objects.get(id = idEntrada)
-
-    if request.user.is_authenticated:
-        usuario_logueado = request.user
-        try:
-            existeVoto = Voto.objects.get(usuario=usuario_logueado,
-                                            content_type= ContentType.objects.get_for_model(Circuito),
-                                            object_id = idEntrada)
-            siHaVotado = True
-        except ObjectDoesNotExist:
-            siHaVotado = False
-        
+    siHaVotado = estadoVoto_AUX(request, Circuito, idEntrada)
 
     return render(request, 'detallesCircuito.html', {'cir':circuito, 'siHaVotado': siHaVotado})
 
@@ -56,7 +61,7 @@ def list_temporadas(request):
 
 def detallesTemporada(request, anyoEntrada):
     temporada = Temporada.objects.get(anyo = anyoEntrada)
-
+    
     dataFile = json.loads(temporada.tablaPilotos)
 
     #MUNDIAL DE PILOTOS
@@ -73,7 +78,7 @@ def detallesTemporada(request, anyoEntrada):
 ################# PILOTOS ##########
 
 def list_pilotos(request):
-    pilotos = Piloto.objects.all().order_by('-victoriasHistorico')
+    pilotos = Piloto.objects.all().order_by('-podiosHistorico')
     page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
 
     try:
@@ -87,25 +92,23 @@ def list_pilotos(request):
 
 def detallesPiloto(request, idEntrada):
     piloto = Piloto.objects.get(id=idEntrada)
+    siHaVotado = estadoVoto_AUX(request, Piloto, idEntrada)
+
     equiposDelPiloto = piloto.equipos_asociados()
     listaMundiales = piloto.listaCampeonatosMundiales()
 
-    if listaMundiales[0] == "":
+    if listaMundiales[0] == "": #Significa que no hay ninguno (aunque len sea = 1)
         numeroMundiales = 0
         listaMundiales = ""
-        datos = {
-        'piloto':piloto,
-        'equiposDelPiloto':equiposDelPiloto,
-        'listaMundiales':listaMundiales,
-        'numeroMundiales':numeroMundiales
-        }  
     else:
         numeroMundiales = len(listaMundiales)
-        datos = {
+
+    datos = {
         'piloto':piloto,
         'equiposDelPiloto':equiposDelPiloto,
         'listaMundiales':listaMundiales,
-        'numeroMundiales':numeroMundiales
+        'numeroMundiales':numeroMundiales,
+        'siHaVotado': siHaVotado,
         }  
 
     return render(request, 'detallesPiloto.html', datos)
@@ -127,24 +130,22 @@ def list_equipos(request):
 
 def detallesEquipo(request, idEntrada):
     equipo = Equipo.objects.get(id=idEntrada)
+    siHaVotado = estadoVoto_AUX(request, Equipo, idEntrada)
+
     listaMundiales = equipo.listaCampeonatosMundiales()
 
     #Hay un pequeño bug con la lista vacía, da como mínimo un mundial a cada uno
     if listaMundiales[0] == "":
         numeroMundiales = 0
         listaMundiales = ""
-        datos = {
-        'equipo':equipo,
-        'listaMundiales':listaMundiales,
-        'numeroMundiales':numeroMundiales
-        }  
     else:
         numeroMundiales = len(listaMundiales)
-        datos = {
+    datos = {
         'equipo':equipo,
         'listaMundiales':listaMundiales,
-        'numeroMundiales':numeroMundiales
-        }  
+        'numeroMundiales':numeroMundiales,
+        'siHaVotado':siHaVotado
+        }      
 
     return render(request, 'detallesEquipo.html', datos)
 

@@ -58,6 +58,22 @@
         </div>
     </div>
 
+    <div class="row votar-row text-center">
+        <h5>¿Te gusta {{ piloto.nombre|title }}?</h5>
+        <form method="post" action="{% url 'votar_objeto' modelo="piloto" objeto_id=piloto.id %}">
+            {% csrf_token %}
+            {% if siHaVotado %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_no">
+                    <i class="bi bi-heart-fill"></i> {% comment %} Ya no me gusta {% endcomment %}
+                </button>
+            {% else %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_si">
+                    <i class="bi bi-heart"></i> {% comment %} ¡Me gusta! {% endcomment %}
+                </button>
+            {% endif %}
+        </form>
+    </div>
+
 </div>
 </body>    
 {% endblock %}
