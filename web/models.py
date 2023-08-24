@@ -30,7 +30,7 @@ class Voto(models.Model):
 
     def __str__(self):
         if self.me_gusta == True:
-            return  f"{self.usuario.username} - Voto para {self.content_type } - {self.object_id}"
+            return  f"{self.usuario.username} - Voto para {self.content_type } - {self.object_id} - {self.objeto_votado}"
 
 
 class Temporada(models.Model):

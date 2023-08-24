@@ -2,6 +2,7 @@ import json
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 
@@ -25,7 +26,19 @@ def list_circuitos(request):
 
 def detallesCircuito(request, idEntrada):
     circuito = Circuito.objects.get(id = idEntrada)
-    return render(request, 'detallesCircuito.html', {'cir':circuito})
+
+    if request.user.is_authenticated:
+        usuario_logueado = request.user
+        try:
+            existeVoto = Voto.objects.get(usuario=usuario_logueado,
+                                            content_type= ContentType.objects.get_for_model(Circuito),
+                                            object_id = idEntrada)
+            siHaVotado = True
+        except ObjectDoesNotExist:
+            siHaVotado = False
+        
+
+    return render(request, 'detallesCircuito.html', {'cir':circuito, 'siHaVotado': siHaVotado})
 
 ############ TEMPORADAS #############
 
@@ -151,24 +164,25 @@ def votar_objeto(request, modelo, objeto_id):
     elif modelo == "equipo":
         tipoModelo = Equipo
 
-    print(modelo)
-    print(tipoModelo)
-
     if tipoModelo != None:
         objeto = get_object_or_404(tipoModelo, id = objeto_id)
-        print(objeto)
         usario_logueado = request.user
         accion = request.POST.get("accion")
-        print(accion)
 
         if accion == "vota_si":
             content_type = ContentType.objects.get_for_model(objeto)
-            print(content_type)
             voto, created = Voto.objects.get_or_create(usuario = usario_logueado,
                                                         content_type = content_type,
                                                           object_id = objeto_id)
             voto.me_gusta = True
             voto.save()
+
+        elif accion == "vota_no":
+            content_type = ContentType.objects.get_for_model(objeto)
+            #No sería voto, _ como arriba (esto devuelve unicamente el voto)
+            votoNegativo = Voto.objects.get(usuario = usario_logueado, content_type = content_type,
+                                                    object_id = objeto_id)
+            votoNegativo.delete()          
     
     return redirect("detalles" +modelo.capitalize(), idEntrada=objeto_id)
 

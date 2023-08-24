@@ -33,10 +33,19 @@
         </div>
     </div>
 
-    <div class="row votar-row">
+    <div class="row votar-row text-center">
+        <h5>¿Te gusta {{ cir.nombre }}?</h5>
         <form method="post" action="{% url 'votar_objeto' modelo="circuito" objeto_id=cir.id %}">
             {% csrf_token %}
-            <button type="submit" name="accion" value="vota_si">¡Me gusta!</button>
+            {% if siHaVotado %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_no">
+                    <i class="bi bi-heart-fill"></i> {% comment %} Ya no me gusta {% endcomment %}
+                </button>
+            {% else %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_si">
+                    <i class="bi bi-heart"></i> {% comment %} ¡Me gusta! {% endcomment %}
+                </button>
+            {% endif %}
         </form>
         
     </div>

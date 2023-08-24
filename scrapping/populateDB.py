@@ -184,7 +184,7 @@ def extraer_pilotos():
     print("Numero de pilotos: " + str(len(lista)))
     return lista
 
-def extraer_escuderias():
+def extraer_equipos():
     anyoComienzo=1950
     anyoFinal=2023
     lista=[]
@@ -195,31 +195,31 @@ def extraer_escuderias():
         f = urllib.request.urlopen(url)
         s = BeautifulSoup(f,"lxml")      
        
-        escuderias = s.find("table",class_="data-table").tbody.find_all("tr")
-        for esc in escuderias:
-            urlEscuderia = "https://pitwall.app" + esc.td.a['href']
-            if urlEscuderia not in listaUrls:            
-                listaUrls.append(urlEscuderia) #url ya visitada
-                fEscuderia = urllib.request.urlopen(urlEscuderia)
-                sEscuderia = BeautifulSoup(fEscuderia, "lxml")
+        equipos = s.find("table",class_="data-table").tbody.find_all("tr")
+        for esc in equipos:
+            urlEquipo = "https://pitwall.app" + esc.td.a['href']
+            if urlEquipo not in listaUrls:            
+                listaUrls.append(urlEquipo) #url ya visitada
+                fEquipo = urllib.request.urlopen(urlEquipo)
+                sEquipo = BeautifulSoup(fEquipo, "lxml")
                                
-                nombre = sEscuderia.find("div", class_="title").h1.text.strip().lower()
+                nombre = sEquipo.find("div", class_="title").h1.text.strip().lower()
                 print(nombre)
                 
                 #ESCUDO (algunas vienen sin él)
-                lugarImagen = sEscuderia.find("div", class_="image")
+                lugarImagen = sEquipo.find("div", class_="image")
                 if lugarImagen.img:
                     imagen = lugarImagen.img['src']
                 else:
                     imagen = "/static/media/Imagen_no_disponible.png"
                 
-                nacionalidad = sEscuderia.find("div", class_="stats-block").find_all("div")[1].text.strip()
+                nacionalidad = sEquipo.find("div", class_="stats-block").find_all("div")[1].text.strip()
                 pais = traduce_nacionalidades(nacionalidad)
                 
                 #campeonatosMundiales y temporadas
                 temporadas=[]
                 campeonatosMundiales = []
-                filasTemporadas = sEscuderia.find("table", class_="data-table").tbody.find_all("tr")
+                filasTemporadas = sEquipo.find("table", class_="data-table").tbody.find_all("tr")
                 for temporada in filasTemporadas:
                     columnas = temporada.find_all("td")
                     temporadas.append(columnas[0].a.text) #lista con los años presente en F1
@@ -229,7 +229,7 @@ def extraer_escuderias():
                 temporadasTexto = ",".join(temporadas)       
                 campeonatosMundialesTexto = ",".join(campeonatosMundiales)
                 
-                secciones = sEscuderia.find("div", id="show-constructor").find_all("div", class_="section")
+                secciones = sEquipo.find("div", id="show-constructor").find_all("div", class_="section")
                 
                 #Seccion de victorias,podios,puntos
                 seccionDatos = secciones[1].div.find_all("div", class_="stats-block")
@@ -373,7 +373,7 @@ def populateDB():
 
     print("Se ha completado el poblado de Temporadas")
 
-    listaEquipos= extraer_escuderias()
+    listaEquipos= extraer_equipos()
     num_equipos = 1
     for equipo in listaEquipos:
         if not Equipo.objects.filter(nombre=equipo[0]).exists():
