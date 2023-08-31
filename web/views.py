@@ -9,8 +9,6 @@ from django.contrib.contenttypes.models import ContentType
 from web.models import Circuito, Piloto,Temporada, Equipo, Voto
 
 
-
-
 def landing(request):
     return render(request, 'landing.html')
 

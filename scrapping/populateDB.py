@@ -5,6 +5,11 @@ from tkinter import *
 from tkinter import messagebox
 import re, os, shutil
 
+# import sys
+# print(sys.path)
+
+# from django.conf import settings
+# settings.configure()
 
 from web.models import Circuito, Equipo, EquiposYPilotos, Piloto, Temporada
 from whoosh.index import create_in,open_dir
@@ -37,13 +42,13 @@ def extraer_circuitos():
             
             #Tipo
             if nombre == "Scandinavian Raceway": #Excepcion: Circuito con tipo "doble" autodromo-aerodromo:
-                tipo = "Aeródromo"
+                tipo = "aerodromo"
             else:
                 tipoSinUnificar = columnas[1].string.strip()
                 tipo = unidecode(tipoSinUnificar).lower()
             
             #Excepcion: Variación del circuito de Indianapolis indistinguible por el nombre
-            if nombre == ("Indianápolis") and tipo == "Autódromo":
+            if nombre == ("Indianápolis") and tipo == "autodromo":
                 nombre = "Indianápolis (500 millas)"
             
             #País
@@ -80,6 +85,8 @@ def extraer_circuitos():
                 #longitud = longitud.replace("[1]","")
                 longitud = 6.175 # única longitud introducida a mano (da problemas con el casteo a float)
             
+
+            print(nombre)
             lista.append((nombre,tipo,pais,edicionesDisputadas,float(longitud),imagen))
     print("Extracción de circuitos completada")
     return lista

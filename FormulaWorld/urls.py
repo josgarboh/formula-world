@@ -43,4 +43,5 @@ urlpatterns = [
     path('votar/<str:modelo>/<int:objeto_id>/', views.votar_objeto, name='votar_objeto'),
 
     path('', include("authentication.urls")),
+    path('', include('sistema_recomendacion.urls')),
 ]
