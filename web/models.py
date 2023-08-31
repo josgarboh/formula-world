@@ -102,6 +102,13 @@ class Piloto(models.Model):
     def listaCampeonatosMundiales(self):
         return self.campeonatosMundiales.split(",")
     
+    # Hay que hacer una pequeña correción para que pilotos con 0 mundiales no tengan 1
+    def numeroMundiales(self):
+        return 0 if self.listaCampeonatosMundiales[0] == "" else len(self.listaCampeonatosMundiales)
+    
+    def listaTemporadas(self):
+        return self.temporadas.split(',')
+    
     def equipos_asociados(self):
         return Equipo.objects.filter(equiposypilotos__piloto=self)
 
