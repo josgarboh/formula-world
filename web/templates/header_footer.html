@@ -27,7 +27,7 @@
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
                 {% if user.is_authenticated == True %}
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropbtn">Recomendaciones</a>
+                    <a href="#" class="nav-link dropbtn">Descubre</a>
                     <div class="dropdown-content">             
                         <a href="{% url 'recomendacionCircuitos' %}">Circuitos</a>
                         <a href="{% url 'recomendacionEquipos' %}">Equipos</a>
@@ -35,10 +35,17 @@
                     </div>
                 </li>
                 {% endif %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'listaCircuitos' %}">Circuitos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'listaTemporadas' %}">Temporadas</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'listaEquipos' %}">Equipos</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'listaPilotos' %}">Pilotos</a></li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropbtn">Contenido</a>
+                    <div class="dropdown-content">        
+                        <a href="{% url 'listaCircuitos' %}">Circuitos</a>
+                        <a href="{% url 'listaTemporadas' %}">Temporadas</a>
+                        <a href="{% url 'listaEquipos' %}">Equipos</a>
+                        <a href="{% url 'listaPilotos' %}">Pilotos</a>
+                    </div>
+                </li>
+
                 <!-- Agrega el elemento de menú desplegable para el usuario -->
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropbtn">Cuenta</a>

@@ -1,5 +1,13 @@
 {% extends 'header_footer.html' %}
 
+{% load static %}
+{% block head %}
+    {{ block.super }} 
+    {% comment %} block.super permite no sobreescribir el head del archivo de extends {% endcomment %}
+    <script src="{% static 'js/recomendaciones.js' %}"></script>
+    <link href="{% static 'css/recomendaciones.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <body class="body"> 
 <div class="container">
@@ -13,7 +21,27 @@
         <div class="container-fluid p-0">
             <div class="row g-0 row-entidades">
                 {% comment %} Comprobamos si ha votado (si existe recomendaciones es un sí) {% endcomment %}
-                {% if recomendaciones %} 
+                {% if recomendaciones %}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                        <button class="btn btn-secondary" id="botonFormulario">¿Quieres personalizar más las recomendaciones? ¡Pulsa aquí!</button>
+                        </div>
+                    </div>
+
+                    {% comment %} Formulario de personalización de recomendaciones {% endcomment %}
+                    <div class="card text-center" id="formularioPersonalizacion" style="display: none;">
+                        <h4>¿Qué importancia tiene para ti...</h4>
+                        <br>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-secondary" type="submit">Personalizar</button>
+                        </form>
+                    </div>
+
+                    <div class="row"></div> 
+
                     {% for piloto in recomendaciones %}
                     <div class="col-lg-4 col-sm-6">
                         <a class="enlaces-box" href="/piloto/{{ piloto.id }}" title="{{ piloto.nombre }}">

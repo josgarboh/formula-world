@@ -1,6 +1,6 @@
 from math import sqrt
 from statistics import mean
-from web.models import Equipo, Voto, User, Circuito, Piloto
+from web.models import Equipo, EquiposYPilotos, Voto, User, Circuito, Piloto
 from django.contrib.contenttypes.models import ContentType
 
 def prueba():
@@ -88,12 +88,16 @@ def recomienda_circuitos(circuitos_votados, ponderacion_tipo=4, ponderacion_long
 
 # EXTRA: Coincidencia de equipos en los que ha estado (si le gusta el equipo)
 
-def recomienda_pilotos(pilotos_votados):
+def recomienda_pilotos(pilotos_votados,equipos_votados,ponderacion_equipos=5,
+                       ponderacion_pais=5,ponderacion_longevidad=3,ponderacion_mundiales=5,
+                       ponderacion_victorias=3,ponderacion_podios=2): #valores por defecto
 
     #Transformamos las id en el objeto
     pilotos_gustados = []
+
     for id in pilotos_votados:
         pilotos_gustados.append(Piloto.objects.get(id=id))
+            
 
     paises_votados = []
     temporadas_pilotosFavs = []
@@ -118,33 +122,46 @@ def recomienda_pilotos(pilotos_votados):
         puntuacionPiloto = 0
         if piloto not in pilotos_gustados: #Para no recomendar los que ya le gustan
             
+            #Extra
+            for equipoId in equipos_votados:
+                #comprobación
+                if EquiposYPilotos.objects.filter(piloto=piloto, equipo=Equipo.objects.get(id=equipoId)).exists():
+                    #print(EquiposYPilotos.objects.get(piloto=piloto, equipo=Equipo.objects.get(id=equipoId)))
+                    puntuacionPiloto+= ponderacion_equipos
+
+
             #pais
             if piloto.pais in paises_votados:
-                puntuacionPiloto+=20
+                puntuacionPiloto+=ponderacion_pais
 
             #longevidad
             longevidad = len(piloto.temporadas.split(","))
-            ponderacionMaximaTemporadas = 20
+            #No añadimos el condicional porque media_temporadas como mínimo será siempre 1
+
+            ponderacionMaximaTemporadas = ponderacion_longevidad
             proporcion_cercania = 1 - abs(longevidad - media_temporadas) / (2 * media_temporadas)
             puntuacionPiloto += ponderacionMaximaTemporadas * proporcion_cercania
             
             #mundiales
             mundiales = 0 if piloto.campeonatosMundiales.split(",")[0] == "" else len(piloto.campeonatosMundiales.split(","))
-            ponderacionMaximaMundiales = 25
-            proporcion_cercania_2 = 1 - abs(mundiales - media_mundiales) / (2 * media_mundiales)
-            puntuacionPiloto += ponderacionMaximaMundiales * proporcion_cercania_2
+            if media_mundiales != 0: #Evitamos la division por 0
+                ponderacionMaximaMundiales = ponderacion_mundiales
+                proporcion_cercania_2 = 1 - abs(mundiales - media_mundiales) / (2 * media_mundiales)
+                puntuacionPiloto += ponderacionMaximaMundiales * proporcion_cercania_2
 
             #victorias
             victorias = piloto.victoriasHistorico
-            ponderacionMaximaVictorias = 20
-            proporcion_cercania_3 = 1 - abs(victorias - media_victorias) / (2 * media_victorias)
-            puntuacionPiloto += ponderacionMaximaVictorias * proporcion_cercania_3
+            if media_victorias != 0:
+                ponderacionMaximaVictorias = ponderacion_victorias
+                proporcion_cercania_3 = 1 - abs(victorias - media_victorias) / (2 * media_victorias)
+                puntuacionPiloto += ponderacionMaximaVictorias * proporcion_cercania_3
 
             #podios
             podios = piloto.podiosHistorico
-            ponderacionMaximaPodios = 15
-            proporcion_cercania_4 = 1 - abs(podios - media_podios) / (2 * media_podios)
-            puntuacionPiloto += ponderacionMaximaPodios * proporcion_cercania_4
+            if media_podios != 0:
+                ponderacionMaximaPodios = ponderacion_podios
+                proporcion_cercania_4 = 1 - abs(podios - media_podios) / (2 * media_podios)
+                puntuacionPiloto += ponderacionMaximaPodios * proporcion_cercania_4
 
             valoraciones_no_votados[piloto] = puntuacionPiloto
 
