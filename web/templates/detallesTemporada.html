@@ -1,14 +1,44 @@
 {% extends 'header_footer.html' %}
 
 {% block content %}
+
+<head>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+    }
+
+    th {
+        border-bottom: 2px solid #000;
+        background-color: #f2f2f2;
+    }
+
+
+    td:first-child {
+        width: 5%;
+    }
+</style>
+</head>
 <body class="body"> 
 <div class="container">
+
+    <div class="row text-center titulo-entidad-row">
+        <div class="col-md-8">
+            <div class="card">
+                <h1 class="card-title">Temporada {{ temporada.anyo }} de Fórmula 1 </h1>
+            </div>
+        </div>
+    </div>
 
     <div class="row text-center">
         <div class="col-md-12">
             <div class="imagen-temporada">
-                <h1 class="presentacion-temporada">Temporada {{ temporada.anyo }} de Fórmula 1</h1>
-                <br>
                 <h3>Campeón del mundial de Pilotos:</h3>
                 <img class="img-thumbnail" src="{{ temporada.imagenHistorica }}">
             </div>
@@ -27,8 +57,8 @@
             {% for piloto in mundialPilotos %}
             <tr>
                 <td>{{ piloto.posicion }}</td>
-                <td>{{ piloto.nombre }}</td>
-                <td>{{ piloto.equipo }}</td>
+                <td><a style="text-decoration: none; color: black;" href="/piloto/{{ piloto.objetoPiloto.id }}">{{ piloto.nombre }}</a></td>
+                <td><a style="text-decoration: none; color: black;" href="/equipo/{{ piloto.objetoEquipo.id }}">{{ piloto.equipo }}</a></td>
                 <td>{{ piloto.puntos }}</td>
             </tr>
             {% endfor %}

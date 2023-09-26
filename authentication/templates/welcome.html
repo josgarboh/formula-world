@@ -1,0 +1,22 @@
+{% extends "header_footer.html" %}
+
+{% block content %}
+<style>
+    div.row-bienvenido {
+        margin-top: 15%;
+    }
+    p {
+        font-size:125%;
+    }
+</style>
+
+<body>
+    <div class="container text-center">
+        <div class="row row-bienvenido">
+            <h1>¡Bienvenido a Fórmula World!</h1>
+            <p>Ya puedes <a href="{% url 'login' %}">iniciar sesión</a>.</p>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

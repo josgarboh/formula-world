@@ -25,6 +25,16 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon" style="background-color: lightsteelblue;"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                {% if user.is_authenticated == True %}
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropbtn">Recomendaciones</a>
+                    <div class="dropdown-content">             
+                        <a href="{% url 'recomendacionCircuitos' %}">Circuitos</a>
+                        <a href="{% url 'recomendacionEquipos' %}">Equipos</a>
+                        <a href="{% url 'recomendacionPilotos' %}">Pilotos</a>
+                    </div>
+                </li>
+                {% endif %}
                 <li class="nav-item"><a class="nav-link" href="{% url 'listaCircuitos' %}">Circuitos</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listaTemporadas' %}">Temporadas</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'listaEquipos' %}">Equipos</a></li>

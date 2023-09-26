@@ -6,16 +6,19 @@
 
     <div class="row text-center" id="infoCircuitoRow">
         <div class="col-md-5">
-            <div class="imagen-trazado">
+            <div class="imagen-entidad">
                 <img class="img-thumbnail" src="{{ equipo.imagen }}">
             </div>
         </div>
 
         <div class="col-md-5">
+            <div class="card">
+                <h1 class="card-title"> {{ equipo.nombre|title }} </h1>
+            </div>
+            <hr class="divider" />
+
             <div class="card detalles-entidad">
-                <h2> {{ equipo.nombre|title }} </h2>
-                <br>
-                <table>
+                <table class="tabla-entidad-2">
                     <tr>
                         <th>País</th>
                         <th>Victorias</th>
@@ -33,6 +36,7 @@
 
             <br>
 
+            {% if user.is_authenticated %}
             <div class="row votar-row text-center">
                 <h5>¿Te gusta {{ equipo.nombre|title }}?</h5>
                 <form method="post" action="{% url 'votar_objeto' modelo="equipo" objeto_id=equipo.id %}">
@@ -47,31 +51,26 @@
                         </button>
                     {% endif %}
                 </form>
-            </div>        
+            </div>
+            {% endif %} 
+
         </div>
 
     </div>
 
+    {% if listaMundiales != "" %}
     <div class="row text-center" id="infoCircuitoRow">
-        <div class="card detalles-circuito">
-            <table>
-                <tr>
-                    <th>Campeonatos (años)</th>
-                    {% comment %} <th>Equipos</th> {% endcomment %}
-                </tr>
-                <tr>
-                    <td>{% for m in listaMundiales%}
-                        {{ m }}
-                        <br>
-                        {% endfor %}
-                    </td>
-                    {% comment %} <td>{% for e in equiposDelPiloto %}
-                        {{ e.pais|title }},{% endfor %}
-                    </td> {% endcomment %}
-                </tr>
-            </table>
+        <div class="card detalles-entidad">
+            <h3 class="card-title">Campeonatos (años)</h3>
+            <br>
+            <div>
+                {% for m in listaMundiales%}
+                    <a class="btn btn-dark botones-mundiales" href="/temporada/{{m}}">{{ m }}</a>
+                {% endfor %}
+            </div>
         </div>
     </div>
+    {% endif %}
 
     
 </div>

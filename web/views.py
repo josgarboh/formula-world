@@ -5,6 +5,9 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
+
+
 
 from web.models import Circuito, Piloto,Temporada, Equipo, Voto
 
@@ -68,9 +71,20 @@ def detallesTemporada(request, anyoEntrada):
     mundialPilotos = []
     for posicion, datos in dataFile.items():
         nombre = datos['nombre'].title()
+        objetoPiloto = Piloto.objects.get(nombre=nombre.lower()) #para poder redireccionar con urls
+
         equipo = datos['equipo'].title()
+        objetoEquipo = Equipo.objects.get(nombre=equipo.lower())
+        
+        
         puntos = datos['puntosPiloto']
-        mundialPilotos.append({'posicion': posicion, 'nombre': nombre, 'equipo': equipo, 'puntos': puntos})
+        if str(puntos).__contains__('.0'):  #Si es un número entero, quitaremos la coma
+            puntos = int(puntos)
+
+        mundialPilotos.append({'posicion': posicion,
+                                'nombre': nombre, 'objetoPiloto':objetoPiloto, 
+                                'equipo': equipo, 'objetoEquipo':objetoEquipo,
+                                'puntos': puntos})
 
     return render(request, 'detallesTemporada.html', {'temporada':temporada, 'mundialPilotos':mundialPilotos})
 
@@ -78,7 +92,7 @@ def detallesTemporada(request, anyoEntrada):
 ################# PILOTOS ##########
 
 def list_pilotos(request):
-    pilotos = Piloto.objects.all().order_by('-podiosHistorico')
+    pilotos = Piloto.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
     page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
 
     try:
@@ -116,7 +130,7 @@ def detallesPiloto(request, idEntrada):
 ####################### EQUIPOS ##############
 
 def list_equipos(request):
-    equipos = Equipo.objects.all().order_by('-victoriasHistorico')
+    equipos = Equipo.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
     page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
 
     try:

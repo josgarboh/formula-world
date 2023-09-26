@@ -40,7 +40,7 @@ class Temporada(models.Model):
     imagenHistorica = models.URLField(validators=[URLValidator()])
 
     def __str__(self):
-        return self.anyo
+        return str(self.anyo)
     
 
 class Circuito(models.Model):
@@ -115,7 +115,6 @@ class Piloto(models.Model):
 class EquiposYPilotos(models.Model):
     piloto = models.ForeignKey(Piloto, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
-    #temporadas = models.CharField(max_length=200)
 
     def __str__(self):
         return f"{self.piloto.nombre} ({self.piloto.id}) - {self.equipo.nombre } ({self.equipo.id})"

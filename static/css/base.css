@@ -51,9 +51,8 @@ div.list-entidades-presentacion {
     margin-top: 4%;
 
     color: #0c0c0e;
-    font-family: "Merriweather Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    font-weight: 700;
-    font-size: 2rem;
+    font-weight: bold;
+    font-size: 3rem;
     padding: 0.75rem 0;
 }
 
@@ -92,16 +91,45 @@ div.row-entidades {
 
 /* DETALLES ENTIDADES (COMÚN) */
 
+button.boton-votar {
+    font-size: 175%;
+}
+
 div.detalles-entidad {
-    padding: 5%;
+    padding: 2%;
+}
+
+table.tabla-entidad {
+    font-size: 140%;
+}
+
+table.tabla-entidad-2 {
+    font-size: 120%;
+}
+
+.imagen-entidad {
+    width: 80%;
+    height: auto;
+}
+
+a.botones-mundiales {
+    font-size: 125%;
+    font-weight: bold;
+    margin: 1%;
 }
 
 /* DETALLES CIRCUITO */
 
-.imagen-trazado {
-    width: 100%;
-    height: auto;
+.card-title {
+    font-weight: bold;
 }
+
+.card {
+    padding-top: 1.5%;
+    color: black;
+}
+
+
 
 #infoCircuitoRow {
     align-items: center;
@@ -112,4 +140,11 @@ div.detalles-entidad {
 h1.presentacion-temporada {
     margin-top: 2%;
     margin-bottom: 3%;
+}
+
+/* DETALLES PILOTO */
+
+a.botones-equipos {
+    font-size: 120%;
+    margin: 1%
 }

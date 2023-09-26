@@ -5,12 +5,6 @@ from tkinter import *
 from tkinter import messagebox
 import re, os, shutil
 
-# import sys
-# print(sys.path)
-
-# from django.conf import settings
-# settings.configure()
-
 from web.models import Circuito, Equipo, EquiposYPilotos, Piloto, Temporada
 from whoosh.index import create_in,open_dir
 from whoosh.fields import Schema, TEXT, NUMERIC, KEYWORD, ID
@@ -120,7 +114,7 @@ def extraer_temporadas():
             nombreEquipo = columnas[2].text.strip().lower()
             puntos = (columnas[5].text.strip())
             
-            enCadena = posicion + "|" + nombrePiloto + "|" + nombreEquipo + "|" + puntos #se hace así para el esquema Whoosh
+            enCadena = posicion + "|" + nombrePiloto + "|" + nombreEquipo + "|" + puntos 
             listaAnyo.append(enCadena)
             
         parseoLista = ",".join(listaAnyo)        
@@ -134,7 +128,7 @@ def extraer_pilotos():
     anyoFinal=2023
     lista=[]
     listaUrls=[] #La usaremos para no entrar en pilotos ya consultados    
-    for anyo in range(anyoComienzo, anyoFinal+1): #range llega hasta 2023-1, por eso ponemos el +1
+    for anyo in range(anyoComienzo, anyoFinal+1):
     
         url="https://pitwall.app/drivers/archive/"+str(anyo)
         f = urllib.request.urlopen(url)
@@ -149,7 +143,7 @@ def extraer_pilotos():
                 spiloto = BeautifulSoup(fpiloto, "lxml")
                 
                 nombre = spiloto.find("div", id="breadcrumbs").find_all("span")[4].a.text.strip().lower()
-                print(nombre) #mas o menos para llevar un conteo
+                print(nombre) #para saber por qué piloto se va iterando (ejecución larga)
 
                 #ESCUDO (algunas vienen sin él)
                 lugarImagen = spiloto.find("div", class_="image")

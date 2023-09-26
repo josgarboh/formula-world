@@ -1,11 +1,60 @@
 {% extends "header_footer.html" %}
 
 {% block content %}
-<body class="body"> 
-<div class="container">
+<style>
+    #regForm {
+        background-color: #ffffff;
+        margin: 100px auto;
+        margin-top: 50px;
+        padding: 40px;
+        width: 100%;
+        min-width: 300px;
+    }
 
+    /* Estilo para los campos de entrada */
+    input {
+        padding: 10px;
+        width: 100%;
+        font-size: 17px;
+        border: 1px solid #aaaaaa;
+        margin-bottom: 10px; /* Espacio entre campos */
+    }
+
+    /* Marcar campos de entrada con errores de validación */
+    input.invalid {
+        background-color: #ffdddd;
+    }
+
+    /* Ocultar todos los pasos por defecto */
+    .tab {
+        display: none;
+    }
+
+    .alert {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
+</style>
+<body class="body" id="regForm"> 
+<div class="container text-center">
+    <h1>Registro</h1>
     <div class="row">
-        <h1>Registro</h1>
+        
         {% if messages %}
             <ul>
                 {% for message in messages %}
@@ -13,6 +62,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
+        
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

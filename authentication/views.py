@@ -15,13 +15,16 @@ def registro(request):
         if form.is_valid():
             form.save()
             messages.success(request, "¡Bienvenido a Fórmula World!")
-            return redirect('landing')
+            return redirect('bienvenido')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
     else:
         form = forms.RegistroForm()
     return render(request, "register.html", {'form': form})
+
+def bienvenido(request):
+    return render(request, 'welcome.html')
 
 @login_required
 def logout_view(request):
