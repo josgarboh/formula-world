@@ -1,0 +1,66 @@
+{% extends 'header_footer.html' %}
+
+{% block content %}
+<body class="body"> 
+<div class="container">
+
+    <div class="row text-center titulo-entidad-row">
+        <div class="col-md-6">
+            <div class="card">
+                <h1 class="card-title"> {{ cir.nombre }} </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-8">
+            <div class="imagen-trazado">
+                <img class="img-thumbnail" src="{{ cir.imagen }}">
+            </div>
+        </div>
+    </div>
+    
+    <div class="row text-center">
+        <div class="card detalles-entidad">
+            <h2 class="card-title">Datos del circuito</h2>
+            <br>
+            <table class="tabla-entidad">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Pais</th>
+                    <th>Grandes Premios</th>
+                    <th>Longitud</th>
+                </tr>
+                <tr>
+                    <td>{{ cir.tipo|title }}</td>
+                    <td>{{ cir.pais }}</td>
+                    <td>{{ cir.edicionesDisputadas }}</td>
+                    <td>{{ cir.longitud }} kms</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row votar-row text-center">
+        <h4>¿Te gusta {{ cir.nombre }}?</h4>
+        <form method="post" action="{% url 'votar_objeto' modelo="circuito" objeto_id=cir.id %}">
+            {% csrf_token %}
+            {% if siHaVotado %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_no">
+                    <i class="bi bi-heart-fill"></i> {% comment %} Ya no me gusta {% endcomment %}
+                </button>
+            {% else %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_si">
+                    <i class="bi bi-heart"></i> {% comment %} ¡Me gusta! {% endcomment %}
+                </button>
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="b" style="float: right;"></div>
+
+</div>
+</body>    
+{% endblock %}

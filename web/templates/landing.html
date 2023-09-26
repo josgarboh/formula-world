@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>F1 World</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="/static/media/iconoFormula.ico" />
+        <!-- Bootstrap Icons-->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
+        <!-- SimpleLightbox plugin CSS-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/static/css/landing.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#page-top">F1 World</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="#presentacion">Innovación</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contenido">Contenido</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#enlaces">Accesos</a></li>
+                        {% comment %} <li class="nav-item"><a class="nav-link" href="#contact">POROPON</a></li> {% endcomment %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container px-4 px-lg-5 h-100">
+                <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+                    <div class="col-lg-8 align-self-end">
+                        <h1 class="text-white font-weight-bold">Fórmula World</h1>
+                        <hr class="divider" />
+                    </div>
+                    <div class="col-lg-8 align-self-baseline">
+                        <p class="text-white-modified mb-5">¡El rincón para los fanáticos de la Fórmula 1!</p>
+                        <a class="btn btn-primary btn-xl" href="#enlaces">Arrancar motores</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- About-->
+        <section class="page-section bg-dark" id="presentacion">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <h2 class="text-white mt-0">¡Descubre más sobre la élite del automovilismo!</h2>
+                        <hr class="divider divider-light" />
+                        <p class="text-white-modified mb-4">Profundiza en la Fórmula 1 gracias a nuestro Sistema de Recomendación. Descubre NUEVOS pilotos, equipos, circuitos y temporadas en base a tus gustos. ¡Sacia tu curiosidad sobre este maravilloso deporte!. ¡Totalmente gratis y a tu disposición!</p>
+                        {% comment %} <a class="btn btn-light btn-xl" href="#services">Get Started!</a> {% endcomment %}
+                        <a class="btn btn-primary btn-xl" href="{% url 'recomendacionCircuitos' %}">Circuitos</a>
+                        <a class="btn btn-primary btn-xl" href="{% url 'recomendacionPilotos' %}">Pilotos</a>
+                        <a class="btn btn-primary btn-xl" href="{% url 'recomendacionEquipos' %}">Equipos</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Services-->
+        <section class="page-section" id="contenido">
+            <div class="container px-4 px-lg-5">
+                <h2 class="text-center mt-0">¿Qué encontrarás en F1 World?</h2>
+                <hr class="divider" />
+                <div class="row gx-4 gx-lg-5">
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-car-front fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Pilotos</h3>
+                            <p class="text-muted mb-0">Los datos más relevantes de TODOS los pilotos que han dejado su nombre en la Fórmula 1.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-calendar fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Temporadas</h3>
+                            <p class="text-muted mb-0">Todos los campeonatos desde 1950 hasta 2022. ¡Desde los más dominados hasta los más competidos!</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-globe fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Circuitos</h3>
+                            <p class="text-muted mb-0">¿Eres más de circuitos nuevos o clásicos? Si no lo sabes aún... ¡Aquí tienes todo sobre los trazados de la F1!</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 text-center">
+                        <div class="mt-5">
+                            <div class="mb-2"><i class="bi-people fs-1 text-primary"></i></div>
+                            <h3 class="h4 mb-2">Equipos</h3>
+                            <p class="text-muted mb-0">¡Investiga sobre tu equipo favorita o descubre alguno que no conocías!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Enlaces-->
+        <div id="enlaces">
+            <div class="container-fluid p-0">
+                <div class="row g-0">
+                    <div class="col-lg-6 col-sm-6">
+                        <a class="enlaces-box" href="{% url 'listaCircuitos' %}" title="CIRCUITOS">
+                            <img class="img-fluid" src="/static/media/accesosLanding/spaCircuito.avif" alt="..." />
+                            <div class="enlaces-box-caption">
+                                <div class="project-category text-white-50">Categoría</div>
+                                <div class="project-name">CIRCUITOS</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 col-sm-6">
+                        <a class="enlaces-box" href="{% url 'listaPilotos' %}" title="PILOTOS">
+                            <img class="img-fluid" src="/static/media/accesosLanding/F1-2023-drivers-scaled.jpeg" alt="..." />
+                            <div class="enlaces-box-caption">
+                                <div class="project-category text-white-50">Categoría</div>
+                                <div class="project-name">PILOTOS</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 col-sm-6">
+                        <a class="enlaces-box" href="{% url 'listaEquipos' %}" title="EQUIPOS">
+                            <img class="img-fluid" src="/static/media/accesosLanding/equipos.jpg" alt="..." />
+                            <div class="enlaces-box-caption">
+                                <div class="project-category text-white-50">Categoría</div>
+                                <div class="project-name">EQUIPOS</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 col-sm-6">
+                        <a class="enlaces-box" href="{% url 'listaTemporadas' %}" title="TEMPORADAS">
+                            <img class="img-fluid" src="/static/media/accesosLanding/Mika-Hakkinen-y-Michael-Schumacher.jpg" alt="..." />
+                            <div class="enlaces-box-caption">
+                                <div class="project-category text-white-50">Categoría</div>
+                                <div class="project-name">TEMPORADAS</div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer-->
+        <footer class="bg-light py-5">
+            <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2023 - TFG - Universidad de Sevilla</div></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- SimpleLightbox plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/static/js/scripts_landing.js"></script>
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    </body>
+</html>

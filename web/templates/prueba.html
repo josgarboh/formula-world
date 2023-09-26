@@ -1,0 +1,13 @@
+{% block content %}
+<body class="body">
+<div class="container">
+
+  <h5>Probandopruebas</h5>
+  <form id='formulario' method='post' action=''>{% csrf_token %}
+    <button class="btn waves-effect waves-light" type="submit" name="Aceptar" value="Aceptar">Aceptar</button>
+    <button class="btn waves-effect waves-light" type="submit" name="Cancelar" value="Cancelar">Cancelar</button>
+  </form>
+
+</div>
+</body>    
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'header_footer.html' %}
+
+{% load static %}
+{% block head %}
+    {{ block.super }} 
+    {% comment %} block.super permite no sobreescribir el head del archivo de extends {% endcomment %}
+    <script src="{% static 'js/recomendaciones.js' %}"></script>
+    <link href="{% static 'css/recomendaciones.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<body class="body"> 
+<div class="container">
+
+    <div class="row list-entidades-presentacion text-center">
+        <div class="list-entidades-title">Nuestras recomendaciones de Circuitos</div>
+        <hr class="divider" />
+    </div>
+
+    <div id="enlaces">
+        <div class="container-fluid p-0">
+            <div class="row g-0 row-entidades">
+                {% comment %} Comprobamos si ha votado (si existe recomendaciones es un sí) {% endcomment %}
+                {% if recomendaciones %}
+                
+                    <div class="row">
+                        <div class="col-md-4">
+                        <button class="btn btn-secondary" id="botonFormulario">¿Quieres personalizar más las recomendaciones? ¡Pulsa aquí!</button>
+                        </div>
+                    </div>
+
+                    {% comment %} Formulario de personalización de recomendaciones {% endcomment %}
+                    <div class="card text-center" id="formularioPersonalizacion" style="display: none;">
+                        <h3>¡Trataremos de acercarnos lo máximo posible a tus gustos!</h3>
+                        <br>
+                        <h4>¿Qué importancia tiene para ti...</h4>
+                        <br>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-secondary" type="submit">Personalizar</button>
+                        </form>
+                    </div>
+
+                    <div class="row"></div> 
+
+                    {% for circuito in recomendaciones %}
+                    <div class="col-lg-4 col-sm-6">
+                        <a class="enlaces-box" href="/circuito/{{ circuito.id }}" title="{{ circuito.nombre }}">
+                            <div class="img-container">
+                                <img src="{{ circuito.imagen }}" alt="Circuito {{ circuito.nombre }}" />
+                            </div>
+                            <div class="enlaces-box-caption p-3">
+                                <div class="project-category text-white-50" id="paisEntidad">{{ circuito.pais }}</div>
+                                <div class="project-name" id="nombreTrazado">{{ circuito.nombre }}</div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="row">
+                        <h3 class="text-center">No has votado ningún circuito, ¡no podemos recomendarte nada aún!</h3>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+{% endblock %}

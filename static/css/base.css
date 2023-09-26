@@ -1,0 +1,150 @@
+/* TODAS LAS PÁGINAS */
+
+body.body {
+    background-color: rgba(49,87,207,0.15);    
+}
+
+div.row {
+    margin-top: 3%;
+    justify-content: center;
+}
+
+div.col-md-6 {
+    margin: 1%;
+}
+
+/* BASE */
+
+nav.navbar {
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+/* HOME */
+
+body.portada {
+    background-image: url("https://www.momentogp.com/wp-content/uploads/2018/08/859201_fernando-alonso-wallpaper.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-position-y: -12%;
+}
+
+div.presentacion {
+    padding-top: 10%;
+    align-items: center;
+    margin: auto;
+}
+
+h1.home-Title {
+    color: white;
+    text-align: center;
+}
+
+h3.home-subTitle {
+    color: white;
+}
+
+/* LISTADO ENTIDADES */
+
+div.list-entidades-presentacion {
+    margin-top: 4%;
+
+    color: #0c0c0e;
+    font-weight: bold;
+    font-size: 3rem;
+    padding: 0.75rem 0;
+}
+
+div.display-entidades {
+    margin: 1%;
+}
+
+div.row-entidades {
+    align-items: center;
+}
+
+#paisEntidad {
+    font-size: 120% !important;
+}
+
+#nombreTrazado {
+    font-size: 150% !important;
+}
+
+/* Para unificar el tamaño de las imagenes */
+
+.img-container {
+    width: auto;
+    height: 20rem; /* altura uniforme para las imágenes */
+    background-color: transparent; /* Fondo blanco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* DETALLES ENTIDADES (COMÚN) */
+
+button.boton-votar {
+    font-size: 175%;
+}
+
+div.detalles-entidad {
+    padding: 2%;
+}
+
+table.tabla-entidad {
+    font-size: 140%;
+}
+
+table.tabla-entidad-2 {
+    font-size: 120%;
+}
+
+.imagen-entidad {
+    width: 80%;
+    height: auto;
+}
+
+a.botones-mundiales {
+    font-size: 125%;
+    font-weight: bold;
+    margin: 1%;
+}
+
+/* DETALLES CIRCUITO */
+
+.card-title {
+    font-weight: bold;
+}
+
+.card {
+    padding-top: 1.5%;
+    color: black;
+}
+
+
+
+#infoCircuitoRow {
+    align-items: center;
+}
+
+/* DETALLES TEMPORADA */
+
+h1.presentacion-temporada {
+    margin-top: 2%;
+    margin-bottom: 3%;
+}
+
+/* DETALLES PILOTO */
+
+a.botones-equipos {
+    font-size: 120%;
+    margin: 1%
+}
