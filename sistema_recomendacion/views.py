@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 
 from sistema_recomendacion import sistRecomendacion
-from sistema_recomendacion.forms import PonderacionesCircuitoForm, PonderacionesPilotoForm
+from sistema_recomendacion.forms import PonderacionesCircuitoForm, PonderacionesEquipoForm, PonderacionesPilotoForm
 from web.models import Circuito, Piloto, Equipo
 
 def probando(request):
@@ -36,13 +36,14 @@ def recomendacion_circuitos(request):
                     # Llama a la función con las ponderaciones proporcionadas por el usuario
                     recomendaciones = sistRecomendacion.recomienda_circuitos(circuitos_votados, ponderacion_tipo, ponderacion_longitud, ponderacion_ediciones)
                 else:
-                    # El formulario no es válido, maneja el error o muestra un mensaje al usuario
+                    # Si el formulario no es válido no permite enviarlo
                     form = PonderacionesCircuitoForm()
         else:
             form = PonderacionesCircuitoForm()  # Crea un formulario en blanco si es una solicitud GET
    
         return render(request, 'recomendacionCircuitos.html', {'recomendaciones':recomendaciones,
                                                                'form': form})
+
 
 @login_required
 def recomendacion_pilotos(request):
@@ -71,7 +72,7 @@ def recomendacion_pilotos(request):
                        ponderacion_victorias,ponderacion_podios)
                     
                 else:
-                    # El formulario no es válido, maneja el error o muestra un mensaje al usuario
+                    # Si el formulario no es válido no permite enviarlo
                     form = PonderacionesPilotoForm()
         else:
             form = PonderacionesPilotoForm()  # Crea un formulario en blanco si es una solicitud GET
@@ -79,14 +80,42 @@ def recomendacion_pilotos(request):
         return render(request, 'recomendacionPilotos.html', {'recomendaciones':recomendaciones,
                                                              'form': form})
 
+
 @login_required
 def recomendacion_equipos(request):
     equipos_votados = sistRecomendacion.organiza_votos_2(Equipo, request.user)
+    pilotos_votados = sistRecomendacion.organiza_votos_2(Piloto, request.user)
+
     if not equipos_votados:
         return render(request, 'recomendacionEquipos.html')
     else:
-        recomendaciones = sistRecomendacion.recomienda_equipos(equipos_votados)
-        return render(request, 'recomendacionEquipos.html', {'recomendaciones':recomendaciones})
+        recomendaciones = sistRecomendacion.recomienda_equipos(equipos_votados, pilotos_votados)
+
+        #Procesamos las ponderaciones
+        if request.method == 'POST':
+                form = PonderacionesEquipoForm(request.POST)
+                if form.is_valid():
+                    ponderacion_pilotos = form.cleaned_data['ponderacion_pilotos']
+                    ponderacion_pais = form.cleaned_data['ponderacion_pais']
+                    ponderacion_longevidad = form.cleaned_data['ponderacion_longevidad']
+                    ponderacion_mundiales = form.cleaned_data['ponderacion_mundiales']
+                    ponderacion_victorias = form.cleaned_data['ponderacion_victorias']
+                    ponderacion_podios = form.cleaned_data['ponderacion_podios']
+
+                    # Llama a la función con las ponderaciones proporcionadas por el usuario
+                    recomendaciones = sistRecomendacion.recomienda_equipos(equipos_votados, pilotos_votados,ponderacion_pilotos,
+                       ponderacion_pais,ponderacion_longevidad,ponderacion_mundiales,
+                       ponderacion_victorias,ponderacion_podios)
+                    
+                else:
+                    # Si el formulario no es válido no permite enviarlo
+                    form = PonderacionesEquipoForm()
+        else:
+            form = PonderacionesEquipoForm()  # Crea un formulario en blanco si es una solicitud GET
+
+
+        return render(request, 'recomendacionEquipos.html', {'recomendaciones':recomendaciones,
+                                                             'form':form})
     
 
 

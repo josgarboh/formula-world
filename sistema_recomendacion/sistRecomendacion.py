@@ -88,9 +88,9 @@ def recomienda_circuitos(circuitos_votados, ponderacion_tipo=4, ponderacion_long
 
 # EXTRA: Coincidencia de equipos en los que ha estado (si le gusta el equipo)
 
-def recomienda_pilotos(pilotos_votados,equipos_votados,ponderacion_equipos=5,
-                       ponderacion_pais=5,ponderacion_longevidad=3,ponderacion_mundiales=5,
-                       ponderacion_victorias=3,ponderacion_podios=2): #valores por defecto
+def recomienda_pilotos(pilotos_votados,equipos_votados,ponderacion_equipos=3,
+                       ponderacion_pais=4,ponderacion_longevidad=2,ponderacion_mundiales=3,
+                       ponderacion_victorias=2,ponderacion_podios=1): #valores por defecto
 
     #Transformamos las id en el objeto
     pilotos_gustados = []
@@ -122,7 +122,7 @@ def recomienda_pilotos(pilotos_votados,equipos_votados,ponderacion_equipos=5,
         puntuacionPiloto = 0
         if piloto not in pilotos_gustados: #Para no recomendar los que ya le gustan
             
-            #Extra
+            #Extra Sprint 4
             for equipoId in equipos_votados:
                 #comprobación
                 if EquiposYPilotos.objects.filter(piloto=piloto, equipo=Equipo.objects.get(id=equipoId)).exists():
@@ -169,11 +169,12 @@ def recomienda_pilotos(pilotos_votados,equipos_votados,ponderacion_equipos=5,
     
     return list(recomendaciones_ordenadas.keys())[:12] #Devolvemos los 12 con más nota
 
-### Función para equipos: similar para pilotos aún ###
-# 
-           
+### Función para equipos: similar para pilotos ###
+#           
             
-def recomienda_equipos(equipos_votados):
+def recomienda_equipos(equipos_votados, pilotos_votados,ponderacion_pilotos=3,
+                       ponderacion_pais=4,ponderacion_longevidad=2,ponderacion_mundiales=3,
+                       ponderacion_victorias=2,ponderacion_podios=1):
 
     #Transformamos las id en el objeto
     equipos_gustados = []
@@ -203,39 +204,48 @@ def recomienda_equipos(equipos_votados):
         puntuacionEquipo = 0
         if equipo not in equipos_gustados: #Para no recomendar los que ya le gustan
             
+            #Extra Sprint 4
+            for pilotoId in pilotos_votados:
+                if EquiposYPilotos.objects.filter(piloto=Piloto.objects.get(id=pilotoId), equipo=equipo).exists():
+                    #print(EquiposYPilotos.objects.filter(piloto=Piloto.objects.get(id=pilotoId), equipo=equipo)))
+                    puntuacionEquipo+= ponderacion_pilotos
+
             #pais
             if equipo.pais in paises_votados:
-                puntuacionEquipo+=20
+                puntuacionEquipo+=ponderacion_pais
 
             #longevidad
             longevidad = len(equipo.temporadas.split(","))
-            ponderacionMaximaTemporadas = 20
+            ponderacionMaximaTemporadas = ponderacion_longevidad
             proporcion_cercania = 1 - abs(longevidad - media_temporadas) / (2 * media_temporadas)
             puntuacionEquipo += ponderacionMaximaTemporadas * proporcion_cercania
             
             #mundiales
-            mundiales = 0 if equipo.campeonatosMundiales.split(",")[0] == "" else len(equipo.campeonatosMundiales.split(","))
-            ponderacionMaximaMundiales = 25
-            proporcion_cercania_2 = 1 - abs(mundiales - media_mundiales) / (2 * media_mundiales)
-            puntuacionEquipo += ponderacionMaximaMundiales * proporcion_cercania_2
+            if media_mundiales !=0:
+                mundiales = 0 if equipo.campeonatosMundiales.split(",")[0] == "" else len(equipo.campeonatosMundiales.split(","))
+                ponderacionMaximaMundiales = ponderacion_mundiales
+                proporcion_cercania_2 = 1 - abs(mundiales - media_mundiales) / (2 * media_mundiales)
+                puntuacionEquipo += ponderacionMaximaMundiales * proporcion_cercania_2
 
             #victorias
-            victorias = equipo.victoriasHistorico
-            ponderacionMaximaVictorias = 20
-            proporcion_cercania_3 = 1 - abs(victorias - media_victorias) / (2 * media_victorias)
-            puntuacionEquipo += ponderacionMaximaVictorias * proporcion_cercania_3
+            if media_victorias !=0:
+                victorias = equipo.victoriasHistorico
+                ponderacionMaximaVictorias = ponderacion_victorias
+                proporcion_cercania_3 = 1 - abs(victorias - media_victorias) / (2 * media_victorias)
+                puntuacionEquipo += ponderacionMaximaVictorias * proporcion_cercania_3
 
             #podios
-            podios = equipo.podiosHistorico
-            ponderacionMaximaPodios = 15
-            proporcion_cercania_4 = 1 - abs(podios - media_podios) / (2 * media_podios)
-            puntuacionEquipo += ponderacionMaximaPodios * proporcion_cercania_4
+            if media_podios !=0:
+                podios = equipo.podiosHistorico
+                ponderacionMaximaPodios = ponderacion_podios
+                proporcion_cercania_4 = 1 - abs(podios - media_podios) / (2 * media_podios)
+                puntuacionEquipo += ponderacionMaximaPodios * proporcion_cercania_4
 
             valoraciones_no_votados[equipo] = puntuacionEquipo
 
     recomendaciones_ordenadas = dict(sorted(valoraciones_no_votados.items(), key=lambda item: item[1], reverse=True))
     
-    return list(recomendaciones_ordenadas.keys())[:9] #Devolvemos los 9 con más nota
+    return list(recomendaciones_ordenadas.keys())[:12] #Devolvemos los 9 con más nota
 
 
     
