@@ -1,0 +1,8 @@
+# No subirá los archivos de caché ni los archivos de migraciones
+
+__pycache__/
+
+*.pyc
+
+migrations/
+
