@@ -16,7 +16,7 @@ def probando(request):
     return render(request, 'confirmacion.html')
 
 
-@login_required
+@login_required(login_url="/login")
 def recomendacion_circuitos(request):
     circuitos_votados = sistRecomendacion.organiza_votos_2(Circuito, request.user)
     if not circuitos_votados: #No ha votado ninguno, no mostraremos nada
@@ -45,7 +45,7 @@ def recomendacion_circuitos(request):
                                                                'form': form})
 
 
-@login_required
+@login_required(login_url="/login")
 def recomendacion_pilotos(request):
     pilotos_votados = sistRecomendacion.organiza_votos_2(Piloto, request.user)
     equipos_votados = sistRecomendacion.organiza_votos_2(Equipo, request.user) #EXTRA: si el piloto ha estado en alguno de sus equipos favs sumará
@@ -81,7 +81,7 @@ def recomendacion_pilotos(request):
                                                              'form': form})
 
 
-@login_required
+@login_required(login_url="/login")
 def recomendacion_equipos(request):
     equipos_votados = sistRecomendacion.organiza_votos_2(Equipo, request.user)
     pilotos_votados = sistRecomendacion.organiza_votos_2(Piloto, request.user)

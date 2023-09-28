@@ -150,7 +150,7 @@ def extraer_pilotos():
                 if lugarImagen.img:
                     imagen = lugarImagen.img['src']
                 else:
-                    imagen = "/static/media/perfil-de-usuario.webp" #imagen predeterminada
+                    imagen = "/media/perfil-de-usuario.webp" #imagen predeterminada
     
                 nacionalidad = spiloto.find("div", class_="overview-blocks").find_all("div",class_="value")[2].text.strip()
                 pais = traduce_nacionalidades(nacionalidad)
@@ -212,7 +212,7 @@ def extraer_equipos():
                 if lugarImagen.img:
                     imagen = lugarImagen.img['src']
                 else:
-                    imagen = "/static/media/Imagen_no_disponible.png"
+                    imagen = "/media/Imagen_no_disponible.png"
                 
                 nacionalidad = sEquipo.find("div", class_="stats-block").find_all("div")[1].text.strip()
                 pais = traduce_nacionalidades(nacionalidad)
