@@ -166,7 +166,7 @@ def detallesEquipo(request, idEntrada):
 
 ############################## VOTACIÓN ########################
 
-@login_required
+@login_required(login_url="/login")
 def votar_objeto(request, modelo, objeto_id):
     tipoModelo = None
 

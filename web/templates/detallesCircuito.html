@@ -19,6 +19,24 @@
             </div>
         </div>
     </div>
+
+    {% if user.is_authenticated %}
+    <div class="row votar-row text-center">
+        <h4>¿Te gusta {{ cir.nombre }}?</h4>
+        <form method="post" action="{% url 'votar_objeto' modelo="circuito" objeto_id=cir.id %}">
+            {% csrf_token %}
+            {% if siHaVotado %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_no">
+                    <i class="bi bi-heart-fill"></i> {% comment %} Ya no me gusta {% endcomment %}
+                </button>
+            {% else %}
+                <button class="btn boton-votar" type="submit" name="accion" value="vota_si">
+                    <i class="bi bi-heart"></i> {% comment %} ¡Me gusta! {% endcomment %}
+                </button>
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
     
     <div class="row text-center">
         <div class="card detalles-entidad">
@@ -40,24 +58,6 @@
             </table>
         </div>
     </div>
-
-    {% if user.is_authenticated %}
-    <div class="row votar-row text-center">
-        <h4>¿Te gusta {{ cir.nombre }}?</h4>
-        <form method="post" action="{% url 'votar_objeto' modelo="circuito" objeto_id=cir.id %}">
-            {% csrf_token %}
-            {% if siHaVotado %}
-                <button class="btn boton-votar" type="submit" name="accion" value="vota_no">
-                    <i class="bi bi-heart-fill"></i> {% comment %} Ya no me gusta {% endcomment %}
-                </button>
-            {% else %}
-                <button class="btn boton-votar" type="submit" name="accion" value="vota_si">
-                    <i class="bi bi-heart"></i> {% comment %} ¡Me gusta! {% endcomment %}
-                </button>
-            {% endif %}
-        </form>
-    </div>
-    {% endif %}
 
     <div class="b" style="float: right;"></div>
 

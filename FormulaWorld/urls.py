@@ -20,6 +20,12 @@ from django.urls import include, path
 from web import views
 from scrapping import views as scrappingviews
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('landing/', views.landing, name="landing"),
@@ -44,4 +50,6 @@ urlpatterns = [
 
     path('', include("authentication.urls")),
     path('', include('sistema_recomendacion.urls')),
-]
+] 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

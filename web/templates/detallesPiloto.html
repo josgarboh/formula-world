@@ -66,8 +66,10 @@
                     <h3 class="card-title">Campeonatos (años)</h3>
                     <br>
                     <div>
-                        {% for m in listaMundiales%}
-                            <a class="btn btn-dark botones-mundiales" href="/temporada/{{m}}">{{ m }}</a>
+                        {% for m in listaMundiales %}
+                            {% if m != '2023' %}
+                                <a class="btn btn-dark botones-mundiales" href="/temporada/{{m}}">{{ m }}</a>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
