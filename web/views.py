@@ -18,6 +18,12 @@ def landing(request):
 def index(request):
     return render(request, 'home.html')
 
+def terminos(request):
+    return render(request, 'terms.html')
+
+def gdpr(request):
+    return render(request, 'gdpr.html')
+
 
 ############## CIRCUITOS
 
