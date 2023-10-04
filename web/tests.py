@@ -53,11 +53,12 @@ class TestPuntuacion(TestCase):
 
     #CERRAR SESIÓN EN LA APP ANTES DE EJECUTAR
 
-    # TEST: Botón oculto para usuario no logueado
+    # TEST: Botón oculto para usuario no logueado.
     # No permite votar.
     def test_noVotaNoLogueado(self):
         self.driver.get("http://127.0.0.1:8000/")
         self.driver.set_window_size(1382, 754)
+        self.driver.get("http://127.0.0.1:8000/logout/")
         self.driver.get("http://127.0.0.1:8000/circuito/62") #Red Bull Ring
 
         try:
@@ -80,15 +81,18 @@ class TestPuntuacion(TestCase):
     def test_votarok(self):
         self.driver.get("http://127.0.0.1:8000/")
         self.driver.set_window_size(1382, 754)
+        self.driver.get("http://127.0.0.1:8000/logout/")
+
         self.driver.get("http://127.0.0.1:8000/login/")
         self.driver.find_element(By.ID, "username_or_email").click()
         self.driver.find_element(By.ID, "username_or_email").send_keys("testvoto")
         self.driver.find_element(By.ID, "password").click()
         self.driver.find_element(By.ID, "password").send_keys("estoesunacontrasena")
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-        self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(2)").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".col-lg-6:nth-child(1) .enlaces-box-caption").click()
-        self.driver.find_element(By.CSS_SELECTOR, ".col-lg-4:nth-child(9) .enlaces-box-caption").click()
+        self.driver.get("http://127.0.0.1:8000/circuito/62")
+        #Checkeamos previamente que no haya votos:
+        if self.driver.find_element(By.CLASS_NAME ,"boton-votar").get_attribute("value") == "vota_no":
+            self.driver.find_element(By.CSS_SELECTOR, ".bi").click() # QUITAR VOTO
 
         #Comprobamos que no ha votado aun (es un usuario de prueba)
         boton = self.driver.find_element(By.CLASS_NAME ,"boton-votar")

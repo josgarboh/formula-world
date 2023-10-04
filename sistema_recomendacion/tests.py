@@ -56,7 +56,7 @@ class TestSR(TestCase):
 
     #CERRAR SESIÓN/BORRAR VOTOS EN LA APP ANTES DE EJECUTAR
 
-    # TEST: Redirige a login si no tienes votos del modelo
+    # TEST: Redirige a login si no tienes votos del modelo.
     def test_noLogNoSR(self):
         self.driver.get("http://127.0.0.1:8000/")
         self.driver.set_window_size(1382, 754)
@@ -88,6 +88,13 @@ class TestSR(TestCase):
         self.driver.find_element(By.ID, "password").send_keys("estoesunacontrasena")
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
+        #Comprobación no votos
+        self.driver.get("http://127.0.0.1:8000/circuito/62")
+        #Comprobamos que no haya voto, en caso contrario, lo quitamos.
+        if self.driver.find_element(By.CLASS_NAME ,"boton-votar").get_attribute("value") == "vota_no":
+            self.driver.find_element(By.CSS_SELECTOR, ".bi").click() # QUITAR VOTO
+        
+
         #Sin votar, buscamos recomendaciones
         self.driver.get("http://127.0.0.1:8000/recomendacionCircuitos")
         mensajeCircuitos = self.driver.find_element(By.XPATH, "/html/body/div/div[2]/div/div/div/h3")
@@ -111,6 +118,7 @@ class TestSR(TestCase):
     def test_accesoSRFuncional(self):
         self.driver.get("http://127.0.0.1:8000/")
         self.driver.set_window_size(1382, 754)
+        self.driver.get("http://127.0.0.1:8000/logout/")
 
         self.driver.get("http://127.0.0.1:8000/login/")
         self.driver.find_element(By.ID, "username_or_email").click()
@@ -119,9 +127,10 @@ class TestSR(TestCase):
         self.driver.find_element(By.ID, "password").send_keys("estoesunacontrasena")
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
-        
+        #Si no está votado, votamos (comprobación)
         self.driver.get("http://127.0.0.1:8000/circuito/62") #Red Bull Ring
-        self.driver.find_element(By.CSS_SELECTOR, ".bi").click() # VOTO POSITIVO
+        if self.driver.find_element(By.CLASS_NAME ,"boton-votar").get_attribute("value") == "vota_si":
+            self.driver.find_element(By.CSS_SELECTOR, ".bi").click() # Votamos en caso de que no exista el voto
         self.driver.get("http://127.0.0.1:8000/recomendacionCircuitos")
 
         #Comprobación -> El mensaje anterior ya no sale (si hay voto)
@@ -131,20 +140,23 @@ class TestSR(TestCase):
         except NoSuchElementException: #No lo encuentra -> OK
             pass
 
-        #SPRINT 4
+        #SPRINT 4: Cambio de ponderaciones
+        recomendacion_inicial = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/a')
+        href_antes = recomendacion_inicial.get_attribute("href")
+
         #Cambiamos ponderaciones y comprobamos que la recomendación cambia
-        # self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(4)").click()
-        # self.driver.find_element(By.ID, "botonFormulario").click()
-        # self.driver.find_element(By.ID, "id_ponderacion_tipo").send_keys("0")
-        # self.driver.find_element(By.ID, "id_ponderacion_longitud").click()
-        # self.driver.find_element(By.ID, "id_ponderacion_longitud").send_keys("5")
-        # self.driver.find_element(By.ID, "id_ponderacion_ediciones").click()
-        # self.driver.find_element(By.ID, "id_ponderacion_ediciones").send_keys("5")
-        # self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(5)").click()
-        # self.driver.implicitly_wait(5)
-        # recomendacion_despues = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/a')
-        # #Comprobamos que ambas son diferentes
-        # self.assertNotEqual(recomendacion_despues.get_attribute("href"), recomendacion_despues.get_attribute("href"))
+        self.driver.find_element(By.ID, "botonFormulario").click()
+        self.driver.find_element(By.ID, "id_ponderacion_tipo").clear()
+        self.driver.find_element(By.ID, "id_ponderacion_tipo").send_keys("0")
+        self.driver.find_element(By.ID, "id_ponderacion_longitud").clear()
+        self.driver.find_element(By.ID, "id_ponderacion_longitud").send_keys("5")
+        self.driver.find_element(By.ID, "id_ponderacion_ediciones").clear()
+        self.driver.find_element(By.ID, "id_ponderacion_ediciones").send_keys("5")
+        self.driver.find_element(By.ID, "id_ponderacion_ediciones").send_keys(Keys.ENTER)
+
+        recomendacion_despues = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/a')
+        #Comprobamos que ambas son diferentes
+        self.assertNotEqual(href_antes, recomendacion_despues.get_attribute("href"))
 
         #Revertimos el voto y cerramos sesión
         self.driver.get("http://127.0.0.1:8000/circuito/62") #Red Bull Ring

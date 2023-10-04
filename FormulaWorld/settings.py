@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'scrapping',
     'sistema_recomendacion',
     'web',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
