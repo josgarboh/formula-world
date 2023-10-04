@@ -141,7 +141,7 @@ class TestSR(TestCase):
             pass
 
         #SPRINT 4: Cambio de ponderaciones
-        recomendacion_inicial = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/a')
+        recomendacion_inicial = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/div/a')
         href_antes = recomendacion_inicial.get_attribute("href")
 
         #Cambiamos ponderaciones y comprobamos que la recomendación cambia
@@ -154,7 +154,7 @@ class TestSR(TestCase):
         self.driver.find_element(By.ID, "id_ponderacion_ediciones").send_keys("5")
         self.driver.find_element(By.ID, "id_ponderacion_ediciones").send_keys(Keys.ENTER)
 
-        recomendacion_despues = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/a')
+        recomendacion_despues = self.driver.find_element(By.XPATH, '/html/body/div/div[2]/div/div/div[4]/div/a')
         #Comprobamos que ambas son diferentes
         self.assertNotEqual(href_antes, recomendacion_despues.get_attribute("href"))
 
