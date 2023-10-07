@@ -7,8 +7,15 @@
 
     <div class="row list-entidades-presentacion">
         <div class="list-entidades-title text-center">Temporadas de Fórmula 1 (1950 - 2022)</div>
-        <hr class="divider" />
-        {% comment %} <div class="list-entidades-buscador text-center">#TODO: Buscador y descripción de la página (breve)</div> {% endcomment %}
+    </div>
+
+    <hr class="divider" />
+
+    <div class="row text-center">
+        <form method="GET" action="{% url 'listaTemporadas' %}">
+            <input type="text" name="query" size="25" placeholder="Introduce un año">
+            <button class="btn btn-secondary" type="submit">Buscar</button>
+        </form>
     </div>
 
     <div id="enlaces">
@@ -16,17 +23,22 @@
             <div class="row g-0 row-entidades">
                 {% for t, ganador in temporadas_ganadores %}
                 <div class="col-lg-2 col-sm-6">
-                    <a class="enlaces-box" href="/temporada/{{ t.anyo }}" title="{{ t.anyo }}">
-                        <div class="img-container">
-                            <img src="{{ t.imagenHistorica }}" alt="{{ ganador }}" />
-                        </div>
-                        {% comment %} <img class="img-fluid" src="{{ t.imagenHistorica }}" alt="..." /> {% endcomment %}
-                        <div class="enlaces-box-caption p-3">
-                            <div class="project-category text-white-50" id="paisEntidad">Ganador: {{ ganador|title }}</div>
-                            <div class="project-name" id="nombreTrazado">{{ t.anyo }}</div>
-                            {% comment %} ...|title pone en mayúsculas las iniciales {% endcomment %}
-                        </div>
-                    </a>
+
+                    <div class="card text-center" style="margin-bottom:7.5%;">
+                        <div class="card-title" style="font-size:125%;">{{t.anyo}}</div>
+
+                        <a class="enlaces-box" href="/temporada/{{ t.anyo }}" title="{{ t.anyo }}">
+                            <div class="img-container">
+                                <img src="{{ t.imagenHistorica }}" alt="{{ ganador }}" />
+                            </div>
+                            {% comment %} <img class="img-fluid" src="{{ t.imagenHistorica }}" alt="..." /> {% endcomment %}
+                            <div class="enlaces-box-caption p-3">
+                                <div class="project-category text-white-50" id="paisEntidad">Ganador: {{ ganador|title }}</div>
+                                <div class="project-name" id="nombreTrazado">{{ t.anyo }}</div>
+                                {% comment %} ...|title pone en mayúsculas las iniciales {% endcomment %}
+                            </div>
+                        </a>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

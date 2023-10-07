@@ -18,28 +18,35 @@ def landing(request):
 def index(request):
     return render(request, 'home.html')
 
+def terminos(request):
+    return render(request, 'terms.html')
+
+def gdpr(request):
+    return render(request, 'gdpr.html')
+
 
 ############## CIRCUITOS
 
 def list_circuitos(request):
-    circuitos = Circuito.objects.all().order_by('-edicionesDisputadas')
-    return render(request, 'listCircuitos.html', {'circuitos':circuitos})
 
-#Función que se usará en cada detalles"Modelo" para saber si el usuario ha votado ese modelo o no
-def estadoVoto_AUX(request, modelo, idEntrada):
-    if request.user.is_authenticated:
-        usuario_logueado = request.user
-        try:
-            existeVoto = Voto.objects.get(usuario=usuario_logueado,
-                                            content_type= ContentType.objects.get_for_model(modelo),
-                                            object_id = idEntrada)
-            siHaVotado = True
-        except ObjectDoesNotExist:
-            siHaVotado = False
+    #Sprint 4: BUSCADOR
+    query = request.GET.get('query')
+
+    if query:
+        query.lower() #Ignoramos así mayus/minus
+        # Realiza la búsqueda en función de los campos que se introduzcan
+        circuitos = Circuito.objects.filter(
+            Q(nombre__icontains=query) |
+            Q(pais__icontains=query) |    
+            Q(tipo__icontains=query) |     
+            Q(edicionesDisputadas__icontains=query) | 
+            Q(longitud__icontains=query)  
+        ).order_by('-edicionesDisputadas')
     else:
-        siHaVotado = False #No es un false como tal, es que el usuario está sin identificar        
+        # Si no hay consulta, muestra todos los circuitos
+        circuitos = Circuito.objects.all().order_by('-edicionesDisputadas')
 
-    return siHaVotado
+    return render(request, 'listCircuitos.html', {'circuitos':circuitos})
 
 
 def detallesCircuito(request, idEntrada):
@@ -51,7 +58,17 @@ def detallesCircuito(request, idEntrada):
 ############ TEMPORADAS #############
 
 def list_temporadas(request):
-    temporadas = Temporada.objects.all().order_by('-anyo')
+    #temporadas = Temporada.objects.all().order_by('-anyo')
+
+    #Sprint 4: BUSCADOR
+    query = request.GET.get('query')
+    if query:
+        query.lower()
+        temporadas = Temporada.objects.filter(
+            Q(anyo__icontains=query)
+        ).order_by('-anyo')
+    else:
+        temporadas = Temporada.objects.all().order_by('-anyo')
 
     ganadores = []
     for temporada in temporadas:
@@ -92,17 +109,33 @@ def detallesTemporada(request, anyoEntrada):
 ################# PILOTOS ##########
 
 def list_pilotos(request):
-    pilotos = Piloto.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
-    page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
+    
+    #Sprint 4: BUSCADOR
+    query = request.GET.get('query')
 
-    try:
-        paginator = Paginator(pilotos, 50)  # 50 pilotos en cada página
-        pilotos = paginator.page(page)
-    except: #si la página no existe
-        raise Http404
+    if query:
+        query.lower()
+        pilotos = Piloto.objects.filter(
+            Q(nombre__icontains=query) |
+            Q(pais__icontains=query)
+        ).order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
 
-    # Se pasa pilotos como 'entity' para reutilizar paginator.html
-    return render(request, 'listPilotos.html', {'entity':pilotos, 'paginator':paginator})
+        #No paginamos en caso de búsqueda
+        return render(request, 'listPilotos.html', {'entity':pilotos})
+    else:
+        pilotos = Piloto.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')  
+        page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
+
+        try:
+            paginator = Paginator(pilotos, 50)  # 50 pilotos en cada página
+            pilotos = paginator.page(page)
+        except: #si la página no existe
+            raise Http404
+        
+        # Se pasa pilotos como 'entity' para reutilizar paginator.html
+        return render(request, 'listPilotos.html', {'entity':pilotos, 'paginator':paginator})
+    
+
 
 def detallesPiloto(request, idEntrada):
     piloto = Piloto.objects.get(id=idEntrada)
@@ -130,17 +163,28 @@ def detallesPiloto(request, idEntrada):
 ####################### EQUIPOS ##############
 
 def list_equipos(request):
-    equipos = Equipo.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
-    page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
+    #Sprint 4: BUSCADOR
+    query = request.GET.get('query')
 
-    try:
-        paginator = Paginator(equipos, 50)  # 50 equipos en cada página
-        equipos = paginator.page(page)
-    except: #si la página no existe
-        raise Http404
+    if query:
+        query.lower()
+        equipos = Equipo.objects.filter(
+            Q(nombre__icontains=query) |
+            Q(pais__icontains=query)
+        ).order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')
+        return render(request, 'listEquipos.html', {'entity':equipos})
+    else:
+        equipos = Equipo.objects.all().order_by('-victoriasHistorico','-podiosHistorico','-puntosHistorico')    
+        page  = request.GET.get('page', 1) #Devuelve variable page o la pagina 1 en caso contrario
 
-    # Se pasa equipos como 'entity' para reutilizar paginator.html
-    return render(request, 'listEquipos.html', {'entity':equipos, 'paginator':paginator})
+        try:
+            paginator = Paginator(equipos, 50)  # 50 equipos en cada página
+            equipos = paginator.page(page)
+        except: #si la página no existe
+            raise Http404
+
+        # Se pasa equipos como 'entity' para reutilizar paginator.html
+        return render(request, 'listEquipos.html', {'entity':equipos, 'paginator':paginator})
 
 def detallesEquipo(request, idEntrada):
     equipo = Equipo.objects.get(id=idEntrada)
@@ -165,6 +209,22 @@ def detallesEquipo(request, idEntrada):
 
 
 ############################## VOTACIÓN ########################
+
+#Función que se usará en cada detalles"Modelo" para saber si el usuario ha votado ese modelo o no
+def estadoVoto_AUX(request, modelo, idEntrada):
+    if request.user.is_authenticated:
+        usuario_logueado = request.user
+        try:
+            existeVoto = Voto.objects.get(usuario=usuario_logueado,
+                                            content_type= ContentType.objects.get_for_model(modelo),
+                                            object_id = idEntrada)
+            siHaVotado = True
+        except ObjectDoesNotExist:
+            siHaVotado = False
+    else:
+        siHaVotado = False #No es un false como tal, es que el usuario está sin identificar        
+
+    return siHaVotado
 
 @login_required(login_url="/login")
 def votar_objeto(request, modelo, objeto_id):

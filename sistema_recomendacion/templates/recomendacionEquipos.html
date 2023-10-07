@@ -47,15 +47,18 @@
 
                     {% for equipo in recomendaciones %}
                     <div class="col-lg-4 col-sm-6">
-                        <a class="enlaces-box" href="/equipo/{{ equipo.id }}" title="{{ equipo.nombre }}">
-                            <div class="img-container">
-                                <img src="{{ equipo.imagen }}" alt="Piloto {{ equipo.nombre }}" />
-                            </div>
-                            <div class="enlaces-box-caption p-3">
-                                <div class="project-category text-white-50" id="paisEntidad">{{ equipo.pais }}</div>
-                                <div class="project-name" id="nombreTrazado">{{ equipo.nombre|title }}</div>
-                            </div>
-                        </a>
+                        <div class="card text-center" style="margin-bottom:7.5%;">
+                            <div class="card-title" style="font-size:125%;">{{equipo.nombre|title}}</div>
+                            <a class="enlaces-box" href="/equipo/{{ equipo.id }}" title="{{ equipo.nombre }}">
+                                <div class="img-container">
+                                    <img src="{{ equipo.imagen }}" alt="Piloto {{ equipo.nombre }}" />
+                                </div>
+                                <div class="enlaces-box-caption p-3">
+                                    <div class="project-category text-white-50" id="paisEntidad">{{ equipo.pais }}</div>
+                                    <div class="project-name" id="nombreTrazado">{{ equipo.nombre|title }}</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                 {% else %}

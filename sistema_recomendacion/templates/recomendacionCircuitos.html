@@ -46,15 +46,18 @@
 
                     {% for circuito in recomendaciones %}
                     <div class="col-lg-4 col-sm-6">
-                        <a class="enlaces-box" href="/circuito/{{ circuito.id }}" title="{{ circuito.nombre }}">
-                            <div class="img-container">
-                                <img src="{{ circuito.imagen }}" alt="Circuito {{ circuito.nombre }}" />
-                            </div>
-                            <div class="enlaces-box-caption p-3">
-                                <div class="project-category text-white-50" id="paisEntidad">{{ circuito.pais }}</div>
-                                <div class="project-name" id="nombreTrazado">{{ circuito.nombre }}</div>
-                            </div>
-                        </a>
+                        <div class="card text-center" style="margin-bottom:7.5%;">
+                            <div class="card-title" style="font-size:125%;">{{circuito.nombre|title}}</div>
+                            <a class="enlaces-box" href="/circuito/{{ circuito.id }}" title="{{ circuito.nombre }}">
+                                <div class="img-container">
+                                    <img src="{{ circuito.imagen }}" alt="Circuito {{ circuito.nombre }}" />
+                                </div>
+                                <div class="enlaces-box-caption p-3">
+                                    <div class="project-category text-white-50" id="paisEntidad">{{ circuito.pais }}</div>
+                                    <div class="project-name" id="nombreTrazado">{{ circuito.nombre }}</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                     {% endfor %}
                 {% else %}

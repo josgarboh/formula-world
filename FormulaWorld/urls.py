@@ -32,6 +32,8 @@ urlpatterns = [
     path('', views.landing, name="landing"),
     path('cargaBD/', scrappingviews.carga, name="cargaBD"),
    #path('cargaWhoosh/', scrappingviews.cargaWhoosh, name="cargaWhoosh"),
+    path('terminos/', views.terminos, name="terminos"),
+    path('gdpr/', views.gdpr, name="gdpr"),
 
     path('circuitos/', views.list_circuitos, name = "listaCircuitos"),
     path('circuito/<int:idEntrada>', views.detallesCircuito, name = "detallesCircuito"),

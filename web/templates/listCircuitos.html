@@ -6,8 +6,15 @@
 
     <div class="row list-entidades-presentacion text-center">
         <div class="list-entidades-title">Circuitos de Fórmula 1 (1950 - 2023)</div>
-        <hr class="divider" />
-        {% comment %} <div class="list-entidades-buscador">#TODO: Buscador y descripción de la página (breve)</div> {% endcomment %}
+    </div>
+
+    <hr class="divider" />
+
+    <div class="row text-center">
+        <form method="GET" action="{% url 'listaCircuitos' %}">
+            <input type="text" name="query" size="75" placeholder="Puedes buscar por nombre, tipo, país, número de GPs o longitud">
+            <button class="btn btn-secondary" type="submit">Buscar</button>
+        </form>
     </div>
 
     <div id="enlaces">
@@ -15,16 +22,22 @@
             <div class="row g-0 row-entidades">
                 {% for c in circuitos %}
                 <div class="col-lg-4 col-sm-6">
-                    <a class="enlaces-box" href="/circuito/{{ c.id }}" title="{{ c.nombre }}">
-                        {% comment %} <img class="img-fluid" src="{{ c.imagen }}" alt="..." /> {% endcomment %}
-                        <div class="img-container">
-                            <img src="{{ c.imagen }}" alt="Circuito {{ c.nombre }}" />
-                        </div>
-                        <div class="enlaces-box-caption p-3">
-                            <div class="project-category text-white-50" id="paisEntidad">{{ c.pais }}</div>
-                            <div class="project-name" id="nombreTrazado">{{ c.nombre }}</div>
-                        </div>
-                    </a>
+                    
+                    <div class="card text-center" style="margin-bottom:7.5%;">
+                        <div class="card-title" style="font-size:125%;">{{c.nombre}}</div>
+                        
+                        <a class="enlaces-box" href="/circuito/{{ c.id }}" title="{{ c.nombre }}">
+                            {% comment %} <img class="img-fluid" src="{{ c.imagen }}" alt="..." /> {% endcomment %}
+                            <div class="img-container">
+                                <img src="{{ c.imagen }}" alt="Circuito {{ c.nombre }}" />
+                            </div>
+                            <div class="enlaces-box-caption p-3">
+                                <div class="project-category text-white-50" id="paisEntidad">{{ c.pais }}</div>
+                                <div class="project-name" id="nombreTrazado">{{ c.nombre }}</div>
+                            </div>
+                        </a>
+                    </div>
+                     
                 </div>
                 {% endfor %}
             </div>
