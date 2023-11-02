@@ -19,8 +19,7 @@ version”.
 
 
 A continuacion, se describen los pasos de instalacion de la aplicacion Formula
-World. Las imagenes a las que se hacen referencia se han ubicado al final de este
-manual.
+World.
 1. En la carpeta o direccion que queramos, abrimos un terminal (o nos servimos
 de la interfaz de GitHub Desktop) escribiendo “cmd” en la barra de busqueda.
 2. Una vez en la consola, debemos clonar el repositorio de la aplicacion, ejecutando el comando “git clone enlace”. Enlace:
