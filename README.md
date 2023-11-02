@@ -16,6 +16,8 @@ Requisitos previos:
 utilizar en una consola (símbolo del sistema o cmd) el comando “python –
 version”.
 2. Tener instalado git 10.8, contar con Github Desktop o alguna opcion equivalente.
+
+
 A continuacion, se describen los pasos de instalacion de la aplicacion Formula
 World. Las imagenes a las que se hacen referencia se han ubicado al final de este
 manual.
